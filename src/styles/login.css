@@ -1,0 +1,35 @@
+/* Login Page Custom Styles */
+
+/* Ensure full height for login container */
+.login-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for login form area */
+.login-form-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.login-form-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.login-form-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.login-form-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Smooth transitions for form inputs */
+.form-input {
+  transition: all 0.3s ease;
+}
+
+/* Material icon alignment */
+.material-symbols-outlined {
+  user-select: none;
+}

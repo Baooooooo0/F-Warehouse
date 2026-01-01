@@ -26,9 +26,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (credentials) => {
-    const response = await authAPI.login(credentials);
-    localStorage.setItem('token', response.token);
-    setUser(response.user);
+    // Mock authentication - tài khoản mẫu để test
+    const mockUsers = [
+      { email: 'admin@company.com', password: 'admin123', name: 'Admin User', role: 'admin' },
+      { email: 'user@company.com', password: 'user123', name: 'Regular User', role: 'user' },
+    ];
+
+    // Tìm user phù hợp
+    const user = mockUsers.find(
+      u => u.email === credentials.email && u.password === credentials.password
+    );
+
+    if (!user) {
+      throw new Error('Invalid credentials');
+    }
+
+    // Giả lập response từ API
+    const mockToken = 'mock-jwt-token-' + Date.now();
+    const mockResponse = {
+      token: mockToken,
+      user: { name: user.name, email: user.email, role: user.role }
+    };
+
+    localStorage.setItem('token', mockResponse.token);
+    setUser(mockResponse.user);
+
+    // Uncomment dòng dưới khi đã có backend thật
+    // const response = await authAPI.login(credentials);
+    // localStorage.setItem('token', response.token);
+    // setUser(response.user);
   };
 
   const logout = async () => {
