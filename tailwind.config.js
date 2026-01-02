@@ -11,6 +11,12 @@ export default {
         "primary": "#135bec",
         "background-light": "#ffffff",
         "background-dark": "#101622",
+        "card-dark": "#1c232e",
+        "border-dark": "#2d3646",
+        "text-secondary": "#64748b",
+        "card-light": "#ffffff",
+        "border-light": "#e2e8f0",
+        "text-main": "#0f172a",
       },
       fontFamily: {
         "display": ["Inter", "sans-serif"],

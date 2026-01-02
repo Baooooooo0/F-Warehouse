@@ -1,53 +1,130 @@
-import React from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  const menuItems = [
+    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+    { path: '/warehouses', label: 'Warehouses', icon: 'warehouse' },
+    { path: '/products', label: 'Products', icon: 'package_2' },
+    { path: '/categories', label: 'Categories', icon: 'category' },
+    { path: '/users', label: 'User Roles', icon: 'group' },
+  ];
+
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex h-screen w-full">
       {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">Admin Panel</h1>
+      <aside className="hidden w-72 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div className="flex h-full flex-col justify-between p-4">
+          <div className="flex flex-col gap-6">
+            {/* Logo */}
+            <div className="flex items-center gap-3 px-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+                <span className="material-symbols-outlined text-[24px]">inventory_2</span>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-base font-bold leading-normal text-slate-900">Inventory Mgr</h1>
+                <p className="text-sm font-normal leading-normal text-slate-500">Admin Console</p>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex flex-col gap-2">
+              {menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
+                    isActive(item.path)
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                  <p className={`text-sm leading-normal ${
+                    isActive(item.path) ? 'font-bold' : 'font-medium'
+                  }`}>{item.label}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Menu */}
+          <div className="flex flex-col gap-2 border-t border-slate-200 pt-4">
+            <Link
+              to="/settings"
+              className="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            >
+              <span className="material-symbols-outlined text-[24px]">settings</span>
+              <p className="text-sm font-medium leading-normal">Settings</p>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left"
+            >
+              <span className="material-symbols-outlined text-[24px]">logout</span>
+              <p className="text-sm font-medium leading-normal">Logout</p>
+            </button>
+          </div>
         </div>
-        <nav className="mt-8">
-          <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-700">
-            Dashboard
-          </Link>
-          <Link to="/users" className="block px-4 py-2 hover:bg-gray-700">
-            Users
-          </Link>
-          <Link to="/products" className="block px-4 py-2 hover:bg-gray-700">
-            Products
-          </Link>
-        </nav>
       </aside>
 
       {/* Main Content */}
-      <div className="ml-64">
+      <div className="flex flex-1 flex-col h-full overflow-hidden relative bg-[#f8fafc]">
         {/* Header */}
-        <header className="bg-white shadow">
-          <div className="flex items-center justify-between px-6 py-4">
-            <h2 className="text-xl font-semibold text-gray-800">Welcome, {user?.name}</h2>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
+          <div className="flex items-center gap-4 lg:hidden">
+            <button 
+              className="text-slate-900"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              Logout
+              <span className="material-symbols-outlined">menu</span>
             </button>
+            <h2 className="text-lg font-bold text-slate-900">Dashboard</h2>
+          </div>
+
+          <div className="hidden items-center gap-8 lg:flex">
+            <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900">Dashboard</h2>
+            <div className="relative flex w-64 items-center">
+              <span className="material-symbols-outlined absolute left-3 text-slate-500">search</span>
+              <input 
+                className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary" 
+                placeholder="Search inventory..."
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600">
+              <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+              <span className="hidden sm:inline">Reorder Stock</span>
+            </button>
+            <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50 text-slate-500 hover:text-slate-900 transition-colors relative hover:bg-slate-100">
+              <span className="material-symbols-outlined text-[24px]">notifications</span>
+              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
+            </button>
+            <div 
+              className="h-10 w-10 rounded-full bg-center bg-cover border border-slate-200 cursor-pointer shadow-sm" 
+              style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXD0uPj9cJ5otvYXvEmJ43xjNvY5bKhLUO9lOurWBrtcYPGj2s96xohpGyqoOjN6m3HQywuAumJiZiWWlDwr0gY52WWYp0nbPlt3WdFEUcpQZItk-cfCxROHh67w5qnxMROk54-xiOPRtKvUHVJYgwQkgYL_q7jhaBePFUTCi9ZJ2fgfv39nlM1IYD2xuS0XeVULIw5407HBOP_1QmPP--ThCyn5h2_KTgdut4E7pblvtI1dYbegRLn52yWYijBQWylSoxHDHkxS2d')" }}
+              title={user?.name || 'User'}
+            />
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">
           <Outlet />
         </main>
       </div>
