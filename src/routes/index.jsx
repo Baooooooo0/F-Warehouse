@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import AdminLayout from '../layouts/AdminLayout';
 import AuthLayout from '../layouts/AuthLayout';
 import Dashboard from '../pages/Dashboard/Dashboard';
+import WarehouseList from '../pages/Warehouses/WarehouseList';
 import UserList from '../pages/Users/UserList';
 import UserCreate from '../pages/Users/UserCreate';
 import ProductList from '../pages/Products/ProductList';
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <Dashboard />,
+      },
+      {
+        path: 'warehouses',
+        element: <WarehouseList />,
       },
       {
         path: 'users',

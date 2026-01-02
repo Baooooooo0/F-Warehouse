@@ -17,7 +17,6 @@ const AdminLayout = () => {
     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
     { path: '/warehouses', label: 'Warehouses', icon: 'warehouse' },
     { path: '/products', label: 'Products', icon: 'package_2' },
-    { path: '/categories', label: 'Categories', icon: 'category' },
     { path: '/users', label: 'User Roles', icon: 'group' },
   ];
 
@@ -96,7 +95,9 @@ const AdminLayout = () => {
           </div>
 
           <div className="hidden items-center gap-8 lg:flex">
-            <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900">Dashboard</h2>
+            <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900">
+              {menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard'}
+            </h2>
             <div className="relative flex w-64 items-center">
               <span className="material-symbols-outlined absolute left-3 text-slate-500">search</span>
               <input 
@@ -107,10 +108,18 @@ const AdminLayout = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600">
-              <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-              <span className="hidden sm:inline">Reorder Stock</span>
-            </button>
+            {location.pathname === '/warehouses' && (
+              <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20">
+                <span className="material-symbols-outlined text-[20px]">add</span>
+                <span className="hidden sm:inline">Add Warehouse</span>
+              </button>
+            )}
+            {location.pathname === '/dashboard' && (
+              <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600">
+                <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                <span className="hidden sm:inline">Reorder Stock</span>
+              </button>
+            )}
             <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50 text-slate-500 hover:text-slate-900 transition-colors relative hover:bg-slate-100">
               <span className="material-symbols-outlined text-[24px]">notifications</span>
               <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>

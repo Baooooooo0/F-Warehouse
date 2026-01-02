@@ -1,0 +1,33 @@
+/* Warehouse Page Custom Styles */
+
+/* Smooth transitions */
+.transition-colors {
+  transition: all 0.2s ease;
+}
+
+/* Table hover effects */
+table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.2s ease;
+}
+
+/* Image transitions */
+.bg-cover {
+  transition: all 0.3s ease;
+}
+
+/* Filter button active state */
+.filter-active {
+  background-color: rgba(19, 91, 236, 0.1);
+  border-color: rgba(19, 91, 236, 0.2);
+  color: #135bec;
+}
+
+/* Search input focus */
+input:focus {
+  box-shadow: 0 0 0 2px rgba(19, 91, 236, 0.1);
+}
