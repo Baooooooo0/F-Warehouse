@@ -1,0 +1,31 @@
+📧 TIN NHẮN MẪU GỬI CHO NGƯỜI DÙNG
+==========================================
+
+Xin chào!
+
+Đây là link demo ứng dụng quản lý kho của tôi:
+🔗 https://dry-lines-stay.loca.lt
+
+📋 CÁCH TRUY CẬP:
+1. Click vào link trên
+2. Nếu thấy trang cảnh báo bảo mật → Click nút "Continue" hoặc "Click to Continue"
+3. Bạn sẽ thấy trang đăng nhập
+
+🔐 THÔNG TIN ĐĂNG NHẬP:
+Email: admin@company.com
+Password: admin123
+
+✨ TÍNH NĂNG CÓ THỂ XEM:
+- Dashboard với thống kê kho hàng
+- Danh sách sản phẩm sắp hết hàng
+- Sản phẩm bán chạy nhất
+- Giao diện quản trị đẹp mắt
+
+⚠️ LƯU Ý:
+- Đây là bản demo, dữ liệu chỉ là mẫu
+- Link có thể mất nếu tôi tắt máy
+- Nếu không vào được, hãy báo tôi nhé!
+
+Cảm ơn đã test giúp! 🙏
+
+==========================================
