@@ -18,6 +18,7 @@ const AdminLayout = () => {
     { path: '/warehouses', label: 'Warehouses', icon: 'warehouse' },
     { path: '/products', label: 'Products', icon: 'package_2' },
     { path: '/users', label: 'User Roles', icon: 'group' },
+    { path: '/settings', label: 'Settings', icon: 'settings' },
   ];
 
   const isActive = (path) => location.pathname === path;

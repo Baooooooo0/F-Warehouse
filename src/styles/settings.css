@@ -1,0 +1,124 @@
+/* Settings Page Styles */
+
+/* Tab transitions */
+.border-b-2 {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Profile picture edit button hover */
+.size-8:hover {
+  transform: scale(1.05);
+}
+
+/* Input focus effects */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #135bec;
+  box-shadow: 0 0 0 3px rgba(19, 91, 236, 0.1);
+}
+
+/* Toggle switch animation */
+.peer-checked\:bg-primary {
+  background-color: #135bec;
+}
+
+.peer-focus\:ring-4 {
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+/* Button hover effects */
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Card hover effects */
+.rounded-xl:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Gradient banner animation */
+.bg-gradient-to-r {
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Status badge pulse animation */
+.bg-green-600 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Delete account section hover */
+.bg-red-50:hover {
+  background-color: #fef2f2;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Breadcrumb separator */
+nav ol li span {
+  margin: 0 8px;
+}
+
+/* Smooth scrolling */
+.overflow-y-auto {
+  scroll-behavior: smooth;
+}
+
+/* Form field spacing */
+.grid > div {
+  position: relative;
+}
+
+/* Disabled input styling */
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Icon transitions */
+.material-symbols-outlined {
+  transition: color 0.2s ease-in-out;
+}
+
+/* Tab active state animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lg\:col-span-2 > div {
+  animation: slideIn 0.3s ease-out;
+}

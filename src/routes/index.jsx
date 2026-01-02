@@ -6,6 +6,8 @@ import Dashboard from '../pages/Dashboard/Dashboard';
 import WarehouseList from '../pages/Warehouses/WarehouseList';
 import UserList from '../pages/Users/UserList';
 import UserCreate from '../pages/Users/UserCreate';
+import SettingsMenu from '../pages/Settings/SettingsMenu';
+import UserProfile from '../pages/Settings/UserProfile';
 import ProductList from '../pages/Products/ProductList';
 import ProductCreate from '../pages/Products/ProductCreate';
 import Login from '../pages/Login/Login';
@@ -47,8 +49,14 @@ const router = createBrowserRouter([
       {
         path: 'products/create',
         element: <ProductCreate />,
+      },      {
+        path: 'settings',
+        element: <SettingsMenu />,
       },
-    ],
+      {
+        path: 'settings/profile',
+        element: <UserProfile />,
+      },    ],
   },
   {
     path: '/',
