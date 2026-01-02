@@ -17,7 +17,8 @@ const AdminLayout = () => {
     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
     { path: '/warehouses', label: 'Warehouses', icon: 'warehouse' },
     { path: '/products', label: 'Products', icon: 'package_2' },
-    { path: '/users', label: 'User Roles', icon: 'group' },
+    { path: '/role-management', label: 'Role Management', icon: 'admin_panel_settings' },
+    { path: '/users', label: 'Users', icon: 'group' },
     { path: '/settings', label: 'Settings', icon: 'settings' },
   ];
 
@@ -46,16 +47,14 @@ const AdminLayout = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
-                    isActive(item.path)
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
+                  className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${isActive(item.path)
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
                 >
                   <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
-                  <p className={`text-sm leading-normal ${
-                    isActive(item.path) ? 'font-bold' : 'font-medium'
-                  }`}>{item.label}</p>
+                  <p className={`text-sm leading-normal ${isActive(item.path) ? 'font-bold' : 'font-medium'
+                    }`}>{item.label}</p>
                 </Link>
               ))}
             </div>
@@ -86,7 +85,7 @@ const AdminLayout = () => {
         {/* Header */}
         <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
           <div className="flex items-center gap-4 lg:hidden">
-            <button 
+            <button
               className="text-slate-900"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -101,8 +100,8 @@ const AdminLayout = () => {
             </h2>
             <div className="relative flex w-64 items-center">
               <span className="material-symbols-outlined absolute left-3 text-slate-500">search</span>
-              <input 
-                className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary" 
+              <input
+                className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary"
                 placeholder="Search inventory..."
               />
             </div>
@@ -125,8 +124,8 @@ const AdminLayout = () => {
               <span className="material-symbols-outlined text-[24px]">notifications</span>
               <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
             </button>
-            <div 
-              className="h-10 w-10 rounded-full bg-center bg-cover border border-slate-200 cursor-pointer shadow-sm" 
+            <div
+              className="h-10 w-10 rounded-full bg-center bg-cover border border-slate-200 cursor-pointer shadow-sm"
               style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXD0uPj9cJ5otvYXvEmJ43xjNvY5bKhLUO9lOurWBrtcYPGj2s96xohpGyqoOjN6m3HQywuAumJiZiWWlDwr0gY52WWYp0nbPlt3WdFEUcpQZItk-cfCxROHh67w5qnxMROk54-xiOPRtKvUHVJYgwQkgYL_q7jhaBePFUTCi9ZJ2fgfv39nlM1IYD2xuS0XeVULIw5407HBOP_1QmPP--ThCyn5h2_KTgdut4E7pblvtI1dYbegRLn52yWYijBQWylSoxHDHkxS2d')" }}
               title={user?.name || 'User'}
             />
