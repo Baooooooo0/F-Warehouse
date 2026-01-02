@@ -110,7 +110,10 @@ const AdminLayout = () => {
 
           <div className="flex items-center gap-4">
             {location.pathname === '/warehouses' && (
-              <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20">
+              <button 
+                onClick={() => navigate('/warehouses/create')}
+                className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20"
+              >
                 <span className="material-symbols-outlined text-[20px]">add</span>
                 <span className="hidden sm:inline">Add Warehouse</span>
               </button>
