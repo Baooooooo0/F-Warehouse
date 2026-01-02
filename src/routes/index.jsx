@@ -8,15 +8,20 @@ import UserCreate from '../pages/Users/UserCreate';
 import ProductList from '../pages/Products/ProductList';
 import ProductCreate from '../pages/Products/ProductCreate';
 import Login from '../pages/Login/Login';
+import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/dashboard" replace />,
+    element: <Navigate to="/login" replace />,
   },
   {
     path: '/',
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: 'dashboard',
