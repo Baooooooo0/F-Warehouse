@@ -115,6 +115,15 @@ const AdminLayout = () => {
                 <span className="hidden sm:inline">Add Warehouse</span>
               </button>
             )}
+            {location.pathname === '/products' && (
+              <button 
+                onClick={() => navigate('/products/create')}
+                className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20"
+              >
+                <span className="material-symbols-outlined text-[20px]">add</span>
+                <span className="hidden sm:inline">Add Product</span>
+              </button>
+            )}
             {location.pathname === '/dashboard' && (
               <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600">
                 <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>

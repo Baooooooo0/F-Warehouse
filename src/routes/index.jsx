@@ -4,6 +4,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import AuthLayout from '../layouts/AuthLayout';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import WarehouseList from '../pages/Warehouses/WarehouseList';
+import WarehouseCreate from '../pages/Warehouses/WarehouseCreate';
 import UserList from '../pages/Users/UserList';
 import UserCreate from '../pages/Users/UserCreate';
 import SettingsMenu from '../pages/Settings/SettingsMenu';
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: 'warehouses',
         element: <WarehouseList />,
+      },
+      {
+        path: 'warehouses/create',
+        element: <WarehouseCreate />,
       },
       {
         path: 'users',
