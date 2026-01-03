@@ -7,6 +7,7 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [inventoryExpanded, setInventoryExpanded] = useState(true);
 
   const handleLogout = () => {
     logout();
@@ -16,12 +17,22 @@ const AdminLayout = () => {
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
     { path: '/warehouses', label: 'Warehouses', icon: 'warehouse' },
-    { path: '/products', label: 'Products', icon: 'package_2' },
-    { path: '/users', label: 'User Roles', icon: 'group' },
+    {
+      label: 'Inventory',
+      icon: 'inventory_2',
+      isExpandable: true,
+      children: [
+        { path: '/inventory/products', label: 'Products', icon: 'package_2' },
+        { path: '/inventory/categories', label: 'Category Management', icon: 'category' },
+      ]
+    },
+    { path: '/role-management', label: 'Role Management', icon: 'admin_panel_settings' },
+    { path: '/users', label: 'Users', icon: 'group' },
     { path: '/settings', label: 'Settings', icon: 'settings' },
   ];
 
   const isActive = (path) => location.pathname === path;
+  const isInventoryActive = () => location.pathname.startsWith('/inventory');
 
   return (
     <div className="flex h-screen w-full">
@@ -42,21 +53,62 @@ const AdminLayout = () => {
 
             {/* Navigation */}
             <div className="flex flex-col gap-2">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
-                    isActive(item.path)
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
-                  <p className={`text-sm leading-normal ${
-                    isActive(item.path) ? 'font-bold' : 'font-medium'
-                  }`}>{item.label}</p>
-                </Link>
+              {menuItems.map((item, index) => (
+                <div key={index}>
+                  {item.isExpandable ? (
+                    <>
+                      <button
+                        onClick={() => setInventoryExpanded(!inventoryExpanded)}
+                        className={`group flex items-center justify-between w-full gap-3 rounded-lg px-3 py-2 transition-colors ${isInventoryActive()
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                          <p className={`text-sm leading-normal ${isInventoryActive() ? 'font-bold' : 'font-medium'}`}>
+                            {item.label}
+                          </p>
+                        </div>
+                        <span className={`material-symbols-outlined text-[20px] transition-transform ${inventoryExpanded ? 'rotate-180' : ''}`}>
+                          expand_more
+                        </span>
+                      </button>
+                      {inventoryExpanded && (
+                        <div className="ml-6 mt-1 flex flex-col gap-1">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.path}
+                              to={child.path}
+                              className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${isActive(child.path)
+                                ? 'bg-primary/10 text-primary'
+                                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                                }`}
+                            >
+                              <span className="material-symbols-outlined text-[20px]">{child.icon}</span>
+                              <p className={`text-sm leading-normal ${isActive(child.path) ? 'font-bold' : 'font-medium'}`}>
+                                {child.label}
+                              </p>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${isActive(item.path)
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                        }`}
+                    >
+                      <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                      <p className={`text-sm leading-normal ${isActive(item.path) ? 'font-bold' : 'font-medium'}`}>
+                        {item.label}
+                      </p>
+                    </Link>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -86,7 +138,7 @@ const AdminLayout = () => {
         {/* Header */}
         <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
           <div className="flex items-center gap-4 lg:hidden">
-            <button 
+            <button
               className="text-slate-900"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -97,12 +149,22 @@ const AdminLayout = () => {
 
           <div className="hidden items-center gap-8 lg:flex">
             <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900">
-              {menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard'}
+              {(() => {
+                // Check for inventory sub-pages
+                const inventoryItem = menuItems.find(item => item.isExpandable && item.label === 'Inventory');
+                if (inventoryItem && location.pathname.startsWith('/inventory')) {
+                  const activeChild = inventoryItem.children.find(child => child.path === location.pathname);
+                  return activeChild?.label || 'Inventory';
+                }
+                // Check for regular menu items
+                const activeItem = menuItems.find(item => item.path === location.pathname);
+                return activeItem?.label || 'Dashboard';
+              })()}
             </h2>
             <div className="relative flex w-64 items-center">
               <span className="material-symbols-outlined absolute left-3 text-slate-500">search</span>
-              <input 
-                className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary" 
+              <input
+                className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary"
                 placeholder="Search inventory..."
               />
             </div>
@@ -137,8 +199,8 @@ const AdminLayout = () => {
               <span className="material-symbols-outlined text-[24px]">notifications</span>
               <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
             </button>
-            <div 
-              className="h-10 w-10 rounded-full bg-center bg-cover border border-slate-200 cursor-pointer shadow-sm" 
+            <div
+              className="h-10 w-10 rounded-full bg-center bg-cover border border-slate-200 cursor-pointer shadow-sm"
               style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXD0uPj9cJ5otvYXvEmJ43xjNvY5bKhLUO9lOurWBrtcYPGj2s96xohpGyqoOjN6m3HQywuAumJiZiWWlDwr0gY52WWYp0nbPlt3WdFEUcpQZItk-cfCxROHh67w5qnxMROk54-xiOPRtKvUHVJYgwQkgYL_q7jhaBePFUTCi9ZJ2fgfv39nlM1IYD2xuS0XeVULIw5407HBOP_1QmPP--ThCyn5h2_KTgdut4E7pblvtI1dYbegRLn52yWYijBQWylSoxHDHkxS2d')" }}
               title={user?.name || 'User'}
             />

@@ -11,6 +11,8 @@ import SettingsMenu from '../pages/Settings/SettingsMenu';
 import UserProfile from '../pages/Settings/UserProfile';
 import ProductList from '../pages/Products/ProductList';
 import ProductCreate from '../pages/Products/ProductCreate';
+import CategoryManagement from '../pages/Inventory/CategoryManagement';
+import RoleManagement from '../pages/RoleManagement/RoleManagement';
 import Login from '../pages/Login/Login';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 
@@ -54,14 +56,27 @@ const router = createBrowserRouter([
       {
         path: 'products/create',
         element: <ProductCreate />,
-      },      {
+      },
+      {
+        path: 'inventory/products',
+        element: <ProductList />,
+      },
+      {
+        path: 'inventory/categories',
+        element: <CategoryManagement />,
+      },
+      {
+        path: 'role-management',
+        element: <RoleManagement />,
+      },
+      {
         path: 'settings',
         element: <SettingsMenu />,
       },
       {
         path: 'settings/profile',
         element: <UserProfile />,
-      },    ],
+      },],
   },
   {
     path: '/',
