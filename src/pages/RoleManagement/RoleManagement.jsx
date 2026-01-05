@@ -145,13 +145,20 @@ const RoleManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    isActive: true
+  });
+
   // Filter roles based on search and status
   const filteredRoles = roles.filter(role => {
     const matchesSearch = role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         role.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || 
-                         (statusFilter === 'active' && role.status) ||
-                         (statusFilter === 'inactive' && !role.status);
+      role.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' ||
+      (statusFilter === 'active' && role.status) ||
+      (statusFilter === 'inactive' && !role.status);
     return matchesSearch && matchesStatus;
   });
 
@@ -163,7 +170,7 @@ const RoleManagement = () => {
 
   // Toggle role status
   const toggleRoleStatus = (roleId) => {
-    setRoles(roles.map(role => 
+    setRoles(roles.map(role =>
       role.id === roleId ? { ...role, status: !role.status } : role
     ));
   };
@@ -182,8 +189,50 @@ const RoleManagement = () => {
 
   // Handle create role
   const handleCreateRole = () => {
-    console.log('Create new role');
-    // TODO: Implement create role functionality
+    setIsModalOpen(true);
+    setFormData({ name: '', isActive: true });
+  };
+
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!formData.name.trim()) {
+      alert('Please enter a role name');
+      return;
+    }
+
+    try {
+      // TODO: Replace with actual API endpoint
+      console.log('Sending to backend:', formData);
+
+      // Example API call (uncomment when backend is ready):
+      // const response = await fetch('/api/roles', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData)
+      // });
+      // const data = await response.json();
+
+      // Close modal and reset form
+      setIsModalOpen(false);
+      setFormData({ name: '', isActive: true });
+
+      alert('Role created successfully!');
+    } catch (error) {
+      console.error('Error creating role:', error);
+      alert('Failed to create role');
+    }
+  };
+
+  // Handle form input change
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   // Avatar colors
@@ -216,7 +265,7 @@ const RoleManagement = () => {
             <h1 className="text-3xl font-bold text-slate-900">Role Management</h1>
             <p className="text-slate-500 mt-1">Define access levels and permissions for your team members.</p>
           </div>
-          <button 
+          <button
             onClick={handleCreateRole}
             className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
           >
@@ -317,14 +366,12 @@ const RoleManagement = () => {
                   <td className="px-6 py-4">
                     <button
                       onClick={() => toggleRoleStatus(role.id)}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                        role.status ? 'bg-primary' : 'bg-slate-300'
-                      }`}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${role.status ? 'bg-primary' : 'bg-slate-300'
+                        }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          role.status ? 'translate-x-6' : 'translate-x-1'
-                        }`}
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${role.status ? 'translate-x-6' : 'translate-x-1'
+                          }`}
                       />
                     </button>
                   </td>
@@ -364,28 +411,98 @@ const RoleManagement = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                currentPage === 1
-                  ? 'text-slate-400 cursor-not-allowed'
-                  : 'text-slate-700 hover:bg-slate-100'
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${currentPage === 1
+                ? 'text-slate-400 cursor-not-allowed'
+                : 'text-slate-700 hover:bg-slate-100'
+                }`}
             >
               Previous
             </button>
             <button
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                currentPage === totalPages
-                  ? 'text-slate-400 cursor-not-allowed'
-                  : 'text-white bg-primary hover:bg-blue-700'
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${currentPage === totalPages
+                ? 'text-slate-400 cursor-not-allowed'
+                : 'text-white bg-primary hover:bg-blue-700'
+                }`}
             >
               Next
             </button>
           </div>
         </div>
       </div>
+
+      {/* Create Role Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h2 className="text-xl font-bold text-slate-900">Create New Role</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[24px]">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleSubmit} className="px-6 py-4">
+              <div className="space-y-4">
+                {/* Role Name */}
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+                    Role Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Warehouse Manager"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                {/* Is Active */}
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    name="isActive"
+                    checked={formData.isActive}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
+                    Active Status
+                  </label>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Create Role
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

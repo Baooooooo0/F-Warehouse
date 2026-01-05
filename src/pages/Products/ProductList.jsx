@@ -5,6 +5,15 @@ const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    image: '',
+    warehouseId: '',
+    quantity: ''
+  });
+
   // Mock data for products
   const products = [
     {
@@ -108,6 +117,54 @@ const ProductList = () => {
   const totalResults = 1240;
   const resultsPerPage = 5;
 
+  // Handle create product
+  const handleCreateProduct = () => {
+    setIsModalOpen(true);
+    setFormData({ name: '', image: '', warehouseId: '', quantity: '' });
+  };
+
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!formData.name.trim() || !formData.warehouseId || !formData.quantity) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      // TODO: Replace with actual API endpoint
+      console.log('Sending to backend:', formData);
+
+      // Example API call (uncomment when backend is ready):
+      // const response = await fetch('/api/products', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData)
+      // });
+      // const data = await response.json();
+
+      // Close modal and reset form
+      setIsModalOpen(false);
+      setFormData({ name: '', image: '', warehouseId: '', quantity: '' });
+
+      alert('Product created successfully!');
+    } catch (error) {
+      console.error('Error creating product:', error);
+      alert('Failed to create product');
+    }
+  };
+
+  // Handle form input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Breadcrumb */}
@@ -123,7 +180,10 @@ const ProductList = () => {
           <h1 className="text-4xl font-bold text-slate-900">Products</h1>
           <p className="text-base text-slate-500">Manage your product inventory across all warehouses.</p>
         </div>
-        <button className="flex items-center gap-2 h-11 px-4 rounded-lg bg-primary text-sm font-bold text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20">
+        <button
+          onClick={handleCreateProduct}
+          className="flex items-center gap-2 h-11 px-4 rounded-lg bg-primary text-sm font-bold text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20"
+        >
           <span className="material-symbols-outlined text-[20px]">add</span>
           Add Product
         </button>
@@ -295,6 +355,118 @@ const ProductList = () => {
           </div>
         </div>
       </div>
+
+      {/* Create Product Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h2 className="text-xl font-bold text-slate-900">Add New Product</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[24px]">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleSubmit} className="px-6 py-4">
+              <div className="space-y-4">
+                {/* Product Name */}
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+                    Product Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Wireless Mouse M30"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                {/* Image URL */}
+                <div>
+                  <label htmlFor="image" className="block text-sm font-medium text-slate-700 mb-2">
+                    Image URL
+                  </label>
+                  <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    value={formData.image}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+
+                {/* Warehouse */}
+                <div>
+                  <label htmlFor="warehouseId" className="block text-sm font-medium text-slate-700 mb-2">
+                    Warehouse <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="warehouseId"
+                    name="warehouseId"
+                    value={formData.warehouseId}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+                    required
+                  >
+                    <option value="">Select warehouse</option>
+                    <option value="1">North Logistics Center</option>
+                    <option value="2">West Warehouse</option>
+                    <option value="3">South Distribution</option>
+                    <option value="4">East Warehouse</option>
+                  </select>
+                </div>
+
+                {/* Quantity */}
+                <div>
+                  <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-2">
+                    Quantity <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleInputChange}
+                    placeholder="0"
+                    min="0"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Add Product
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
