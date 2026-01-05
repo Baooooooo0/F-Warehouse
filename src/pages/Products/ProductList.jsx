@@ -171,13 +171,22 @@ const ProductList = () => {
           <h1 className="text-4xl font-bold text-slate-900">Products</h1>
           <p className="text-base text-slate-500">Manage your product inventory across all warehouses.</p>
         </div>
-        <Link
-          to="/inventory/products/add"
-          className="flex items-center gap-2 h-11 px-4 rounded-lg bg-primary text-sm font-bold text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20"
-        >
-          <span className="material-symbols-outlined text-[20px]">add</span>
-          Add Product
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/inventory/products/low-stock"
+            className="flex items-center gap-2 h-11 px-4 rounded-lg border border-orange-200 bg-orange-50 text-sm font-bold text-orange-700 hover:bg-orange-100 transition-colors"
+          >
+            <span className="material-symbols-outlined text-[20px]">warning</span>
+            View Low Stock
+          </Link>
+          <Link
+            to="/inventory/products/add"
+            className="flex items-center gap-2 h-11 px-4 rounded-lg bg-primary text-sm font-bold text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20"
+          >
+            <span className="material-symbols-outlined text-[20px]">add</span>
+            Add Product
+          </Link>
+        </div>
       </div>
 
       {/* Statistics Cards */}
