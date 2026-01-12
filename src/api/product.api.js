@@ -1,23 +1,31 @@
 import axiosClient from './axiosClient';
 
 export const productAPI = {
+  // Get all products with filters and pagination
   getAll: (params) => {
-    return axiosClient.get('/products', { params });
+    return axiosClient.get('/product/list', { params });
   },
-  
-  getById: (id) => {
-    return axiosClient.get(`/products/${id}`);
+
+  // Create new product (with FormData for image upload)
+  create: (formData) => {
+    return axiosClient.post('/product/create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
-  
-  create: (data) => {
-    return axiosClient.post('/products', data);
+
+  // Update product (with FormData for image upload)
+  update: (id, formData) => {
+    return axiosClient.put(`/product/update/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
-  
-  update: (id, data) => {
-    return axiosClient.put(`/products/${id}`, data);
-  },
-  
-  delete: (id) => {
-    return axiosClient.delete(`/products/${id}`);
+
+  // Lock/unlock product
+  lock: (id, isActive) => {
+    return axiosClient.put(`/product/lock/${id}`, { isActive });
   },
 };

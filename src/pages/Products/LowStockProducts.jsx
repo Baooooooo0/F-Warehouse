@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { productAPI } from '../../api/product.api';
+import { categoryAPI } from '../../api/category.api';
+import { warehouseAPI } from '../../api/warehouse.api';
 
 const LowStockProducts = () => {
     const navigate = useNavigate();
@@ -8,73 +11,90 @@ const LowStockProducts = () => {
     const [warehouseFilter, setWarehouseFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
 
-    // Mock data for low stock products
-    const lowStockProducts = [
-        {
-            id: 1,
-            name: 'Wireless Mouse',
-            sku: 'WM-001',
-            image: '🖱️',
-            category: 'Electronics',
-            warehouse: 'Main HQ',
-            quantity: 5,
-            threshold: 15,
-            status: 'Critical',
-            statusColor: 'bg-red-100 text-red-700'
-        },
-        {
-            id: 2,
-            name: 'USB-C Cable',
-            sku: 'UC-299',
-            image: '🔌',
-            category: 'Accessories',
-            warehouse: 'North Depot',
-            quantity: 2,
-            threshold: 20,
-            status: 'Critical',
-            statusColor: 'bg-red-100 text-red-700'
-        },
-        {
-            id: 3,
-            name: 'Monitor Stand',
-            sku: 'MS-550',
-            image: '🖥️',
-            category: 'Office Furniture',
-            warehouse: 'Main HQ',
-            quantity: 8,
-            threshold: 12,
-            status: 'Low Stock',
-            statusColor: 'bg-orange-100 text-orange-700'
-        },
-        {
-            id: 4,
-            name: 'HDMI Adapter',
-            sku: 'HA-101',
-            image: '📺',
-            category: 'Accessories',
-            warehouse: 'East Wing',
-            quantity: 0,
-            threshold: 30,
-            status: 'Depleted',
-            statusColor: 'bg-red-100 text-red-700'
-        },
-        {
-            id: 5,
-            name: 'Ergo Keyboard',
-            sku: 'EK-888',
-            image: '⌨️',
-            category: 'Electronics',
-            warehouse: 'North Depot',
-            quantity: 4,
-            threshold: 10,
-            status: 'Low Stock',
-            statusColor: 'bg-orange-100 text-orange-700'
-        },
-    ];
+    const [lowStockProducts, setLowStockProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [warehouses, setWarehouses] = useState([]);
 
-    const totalResults = 45;
-    const resultsPerPage = 5;
+    const THRESHOLD = 100; // Default threshold for low stock
+
+    useEffect(() => {
+        fetchCategories();
+        fetchWarehouses();
+    }, []);
+
+    useEffect(() => {
+        fetchLowStockProducts();
+    }, [searchQuery, categoryFilter, warehouseFilter, statusFilter, currentPage]);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await categoryAPI.getAll();
+            if (response.code === 'success') {
+                setCategories(response.data || []);
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    const fetchWarehouses = async () => {
+        try {
+            const response = await warehouseAPI.getAll();
+            if (response.code === 'success') {
+                setWarehouses(response.data || []);
+            }
+        } catch (error) {
+            console.error('Error fetching warehouses:', error);
+        }
+    };
+
+    const fetchLowStockProducts = async () => {
+        try {
+            setLoading(true);
+            const params = {
+                page: currentPage,
+            };
+
+            if (searchQuery) params.search = searchQuery;
+            if (warehouseFilter !== 'all') params.warehouseId = warehouseFilter;
+            if (categoryFilter !== 'all') params.categoryId = categoryFilter;
+
+            const response = await productAPI.getAll(params);
+
+            if (response.code === 'success') {
+                // Filter products with quantity < THRESHOLD
+                let filtered = (response.data || []).filter(p => p.quantity < THRESHOLD);
+
+                // Apply status filter
+                if (statusFilter === 'critical') {
+                    filtered = filtered.filter(p => p.quantity > 0 && p.quantity <= 10);
+                } else if (statusFilter === 'low') {
+                    filtered = filtered.filter(p => p.quantity > 10 && p.quantity < THRESHOLD);
+                } else if (statusFilter === 'depleted') {
+                    filtered = filtered.filter(p => p.quantity === 0);
+                }
+
+                setLowStockProducts(filtered);
+            }
+        } catch (error) {
+            console.error('Error fetching low stock products:', error);
+            setLowStockProducts([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getProductStatus = (quantity) => {
+        if (quantity === 0) {
+            return { text: 'Depleted', color: 'bg-red-100 text-red-700' };
+        } else if (quantity <= 10) {
+            return { text: 'Critical', color: 'bg-red-100 text-red-700' };
+        } else {
+            return { text: 'Low Stock', color: 'bg-orange-100 text-orange-700' };
+        }
+    };
 
     return (
         <div className="flex flex-col gap-6">
@@ -91,7 +111,7 @@ const LowStockProducts = () => {
             <div className="flex flex-col gap-2">
                 <h1 className="text-4xl font-bold text-slate-900">All Low Stock Products</h1>
                 <p className="text-base text-slate-500">
-                    Review all products currently below the low stock threshold or depleted. Prioritize restocking based on status.
+                    Review all products currently below the low stock threshold ({THRESHOLD}) or depleted. Prioritize restocking based on status.
                 </p>
             </div>
 
@@ -128,9 +148,11 @@ const LowStockProducts = () => {
                         className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                     >
                         <option value="all">All Categories</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="accessories">Accessories</option>
-                        <option value="furniture">Office Furniture</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
                     </select>
                     <select
                         value={warehouseFilter}
@@ -138,9 +160,11 @@ const LowStockProducts = () => {
                         className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                     >
                         <option value="all">All Warehouses</option>
-                        <option value="main">Main HQ</option>
-                        <option value="north">North Depot</option>
-                        <option value="east">East Wing</option>
+                        {warehouses.map((warehouse) => (
+                            <option key={warehouse.id} value={warehouse.id}>
+                                {warehouse.name}
+                            </option>
+                        ))}
                     </select>
                     <select
                         value={statusFilter}
@@ -188,51 +212,82 @@ const LowStockProducts = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
-                            {lowStockProducts.map((product) => (
-                                <tr key={product.id} className="hover:bg-slate-50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-2xl">
-                                            {product.image}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-semibold text-slate-900">{product.name}</span>
-                                            <span className="text-xs text-slate-500">SKU: {product.sku}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm text-slate-600">{product.category}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm text-slate-600">{product.warehouse}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`text-sm font-bold ${product.quantity === 0 ? 'text-red-600' : 'text-slate-900'}`}>
-                                            {product.quantity}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm text-slate-600">{product.threshold}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${product.statusColor}`}>
-                                            <span className={`h-1.5 w-1.5 rounded-full ${product.status === 'Critical' || product.status === 'Depleted' ? 'bg-red-600' : 'bg-orange-600'}`}></span>
-                                            {product.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="View details">
-                                                <span className="material-symbols-outlined text-[20px]">visibility</span>
-                                            </button>
-                                            <button className="px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
-                                                Order More
-                                            </button>
-                                        </div>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
+                                        Loading low stock products...
                                     </td>
                                 </tr>
-                            ))}
+                            ) : lowStockProducts.length === 0 ? (
+                                <tr>
+                                    <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
+                                        No low stock products found
+                                    </td>
+                                </tr>
+                            ) : (
+                                lowStockProducts.map((product) => {
+                                    const status = getProductStatus(product.quantity);
+                                    return (
+                                        <tr key={product.id} className="hover:bg-slate-50 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 overflow-hidden">
+                                                    {product.image ? (
+                                                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <span className="material-symbols-outlined text-slate-400">inventory_2</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-semibold text-slate-900">{product.name}</span>
+                                                    <span className="text-xs text-slate-500">ID: {product.id}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap gap-1">
+                                                    {product.categoryIds && product.categoryIds.length > 0 ? (
+                                                        product.categoryIds.map((cat, idx) => (
+                                                            <span key={idx} className="text-sm text-slate-600">
+                                                                {cat.categoryName}
+                                                            </span>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-sm text-slate-400">No category</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm text-slate-600">{product.warehouseName}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`text-sm font-bold ${product.quantity === 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                                                    {product.quantity}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm text-slate-600">{THRESHOLD}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                                                    <span className={`h-1.5 w-1.5 rounded-full ${status.text === 'Critical' || status.text === 'Depleted' ? 'bg-red-600' : 'bg-orange-600'}`}></span>
+                                                    {status.text}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="View details">
+                                                        <span className="material-symbols-outlined text-[20px]">visibility</span>
+                                                    </button>
+                                                    <button className="px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
+                                                        Order More
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -240,7 +295,7 @@ const LowStockProducts = () => {
                 {/* Pagination */}
                 <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200">
                     <p className="text-sm text-slate-600">
-                        Showing 1 to {resultsPerPage} of {totalResults} results
+                        Showing {lowStockProducts.length} low stock products (threshold: {THRESHOLD})
                     </p>
                     <div className="flex items-center gap-2">
                         <button
@@ -251,12 +306,6 @@ const LowStockProducts = () => {
                         </button>
                         <button className="min-w-[40px] h-10 px-3 rounded-lg bg-primary text-sm font-semibold text-white">
                             1
-                        </button>
-                        <button className="min-w-[40px] h-10 px-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">
-                            2
-                        </button>
-                        <button className="min-w-[40px] h-10 px-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors">
-                            3
                         </button>
                         <button className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-blue-700 rounded-lg transition-colors">
                             Next

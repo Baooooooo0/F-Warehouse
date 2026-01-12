@@ -15,10 +15,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        const userData = await authAPI.getCurrentUser();
-        setUser(userData);
+        const response = await authAPI.getProfile();
+        if (response.code === 'success') {
+          setUser(response.data);
+        }
       }
     } catch (error) {
+      console.error('Auth check failed:', error);
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
@@ -26,40 +29,33 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (credentials) => {
-    // Mock authentication - tài khoản mẫu để test
-    const mockUsers = [
-      { email: 'admin@company.com', password: 'admin123', name: 'Admin User', role: 'admin' },
-      { email: 'user@company.com', password: 'user123', name: 'Regular User', role: 'user' },
-    ];
+    try {
+      const response = await authAPI.login(credentials);
 
-    // Tìm user phù hợp
-    const user = mockUsers.find(
-      u => u.email === credentials.email && u.password === credentials.password
-    );
+      if (response.code === 'success') {
+        // Store token in localStorage
+        localStorage.setItem('token', response.token);
 
-    if (!user) {
-      throw new Error('Invalid credentials');
+        // Fetch user profile
+        const profileResponse = await authAPI.getProfile();
+        if (profileResponse.code === 'success') {
+          setUser(profileResponse.data);
+        }
+      } else {
+        throw new Error(response.message || 'Đăng nhập thất bại');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Email hoặc mật khẩu không đúng';
+      throw new Error(errorMessage);
     }
-
-    // Giả lập response từ API
-    const mockToken = 'mock-jwt-token-' + Date.now();
-    const mockResponse = {
-      token: mockToken,
-      user: { name: user.name, email: user.email, role: user.role }
-    };
-
-    localStorage.setItem('token', mockResponse.token);
-    setUser(mockResponse.user);
-
-    // Uncomment dòng dưới khi đã có backend thật
-    // const response = await authAPI.login(credentials);
-    // localStorage.setItem('token', response.token);
-    // setUser(response.user);
   };
 
   const logout = async () => {
     try {
       await authAPI.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       localStorage.removeItem('token');
       setUser(null);
