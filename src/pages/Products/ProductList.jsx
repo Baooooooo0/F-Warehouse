@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { productAPI } from '../../api/product.api';
 import { categoryAPI } from '../../api/category.api';
 import { warehouseAPI } from '../../api/warehouse.api';
 
 const ProductList = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
@@ -374,6 +375,13 @@ const ProductList = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => navigate(`/inventory/products/edit/${product.id}`)}
+                            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                            title="Edit"
+                          >
+                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                          </button>
                           <button
                             onClick={() => handleLockProduct(product.id, product.isActive)}
                             className={`p-2 rounded-lg transition-colors ${product.isActive

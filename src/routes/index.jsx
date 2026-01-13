@@ -12,6 +12,7 @@ import UserProfile from '../pages/Settings/UserProfile';
 import ProductList from '../pages/Products/ProductList';
 import ProductCreate from '../pages/Products/ProductCreate';
 import ProductAdd from '../pages/Products/ProductAdd';
+import ProductEdit from '../pages/Products/ProductEdit';
 import LowStockProducts from '../pages/Products/LowStockProducts';
 import CategoryManagement from '../pages/Inventory/CategoryManagement';
 import RoleManagement from '../pages/RoleManagement/RoleManagement';
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: 'inventory/products/add',
         element: <ProductAdd />,
+      },
+      {
+        path: 'inventory/products/edit/:id',
+        element: <ProductEdit />,
       },
       {
         path: 'inventory/products/low-stock',
