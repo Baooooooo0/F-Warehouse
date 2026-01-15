@@ -112,44 +112,44 @@ const ProductList = () => {
       }
     } catch (error) {
       console.error('Error locking product:', error);
-      alert('Failed to update product status');
+      alert('Không thể cập nhật trạng thái sản phẩm');
     }
   };
 
   const getStockStatus = (quantity) => {
     if (quantity === 0) {
-      return { text: 'Out of Stock', color: 'text-red-600' };
+      return { text: 'Hết hàng', color: 'text-red-600' };
     } else if (quantity < 100) {
-      return { text: 'Low Stock', color: 'text-orange-600' };
+      return { text: 'Sắp hết', color: 'text-orange-600' };
     } else {
-      return { text: 'In Stock', color: 'text-green-600' };
+      return { text: 'Còn hàng', color: 'text-green-600' };
     }
   };
 
   const statsConfig = [
     {
-      label: 'Total Products',
+      label: 'Tổng số sản phẩm',
       value: stats.totalProducts,
       icon: 'inventory_2',
       iconBg: 'bg-slate-100',
       iconColor: 'text-slate-600'
     },
     {
-      label: 'Total Value',
+      label: 'Tổng giá trị',
       value: stats.totalValue,
       icon: 'payments',
       iconBg: 'bg-slate-100',
       iconColor: 'text-slate-600'
     },
     {
-      label: 'Low Stock',
+      label: 'Sắp hết hàng',
       value: stats.lowStock,
       icon: 'warning',
       iconBg: 'bg-orange-100',
       iconColor: 'text-orange-600'
     },
     {
-      label: 'Out of Stock',
+      label: 'Hết hàng',
       value: stats.outOfStock,
       icon: 'error',
       iconBg: 'bg-red-100',
@@ -161,16 +161,16 @@ const ProductList = () => {
     <div className="flex flex-col gap-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-slate-500">
-        <Link to="/inventory/products" className="hover:text-slate-900">Inventory</Link>
+        <Link to="/inventory/products" className="hover:text-slate-900">Tồn kho</Link>
         <span>/</span>
-        <span className="text-slate-900 font-medium">Products</span>
+        <span className="text-slate-900 font-medium">Sản phẩm</span>
       </nav>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-4xl font-bold text-slate-900">Products</h1>
-          <p className="text-base text-slate-500">Manage your product inventory across all warehouses.</p>
+          <h1 className="text-4xl font-bold text-slate-900">Sản phẩm</h1>
+          <p className="text-base text-slate-500">Quản lý tồn kho sản phẩm trên tất cả kho hàng.</p>
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -178,14 +178,14 @@ const ProductList = () => {
             className="flex items-center gap-2 h-11 px-4 rounded-lg border border-orange-200 bg-orange-50 text-sm font-bold text-orange-700 hover:bg-orange-100 transition-colors"
           >
             <span className="material-symbols-outlined text-[20px]">warning</span>
-            View Low Stock
+            Xem hàng sắp hết
           </Link>
           <Link
             to="/inventory/products/add"
             className="flex items-center gap-2 h-11 px-4 rounded-lg bg-primary text-sm font-bold text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
-            Add Product
+            Thêm sản phẩm
           </Link>
         </div>
       </div>
@@ -215,7 +215,7 @@ const ProductList = () => {
           </span>
           <input
             type="text"
-            placeholder="Search by name, SKU, or tag"
+            placeholder="Tìm theo tên, SKU hoặc thẻ"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -233,7 +233,7 @@ const ProductList = () => {
             }}
             className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
           >
-            <option value="">All Warehouses</option>
+            <option value="">Tất cả kho</option>
             {warehouses.map((warehouse) => (
               <option key={warehouse.id} value={warehouse.id}>
                 {warehouse.name}
@@ -248,7 +248,7 @@ const ProductList = () => {
             }}
             className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
           >
-            <option value="">All Categories</option>
+            <option value="">Tất cả danh mục</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -263,9 +263,9 @@ const ProductList = () => {
             }}
             className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
           >
-            <option value="">Sort by: Default</option>
-            <option value="asc">Sort by: Stock (Low to High)</option>
-            <option value="desc">Sort by: Stock (High to Low)</option>
+            <option value="">Sắp xếp: Mặc định</option>
+            <option value="asc">Sắp xếp: Tồn kho tăng dần</option>
+            <option value="desc">Sắp xếp: Tồn kho giảm dần</option>
           </select>
         </div>
       </div>
@@ -280,25 +280,25 @@ const ProductList = () => {
                   <input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Product
+                  Sản phẩm
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Category
+                  Danh mục
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Warehouse
+                  Kho
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Stock
+                  Tồn kho
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Price
+                  Giá
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Status
+                  Trạng thái
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Actions
+                  Thao tác
                 </th>
               </tr>
             </thead>
@@ -306,13 +306,13 @@ const ProductList = () => {
               {loading ? (
                 <tr>
                   <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
-                    Loading products...
+                    Đang tải sản phẩm...
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
-                    No products found
+                    Không có sản phẩm nào
                   </td>
                 </tr>
               ) : (
@@ -347,7 +347,7 @@ const ProductList = () => {
                               </span>
                             ))
                           ) : (
-                            <span className="text-sm text-slate-400">No category</span>
+                            <span className="text-sm text-slate-400">Chưa có danh mục</span>
                           )}
                         </div>
                       </td>
@@ -370,7 +370,7 @@ const ProductList = () => {
                           ? 'bg-green-100 text-green-700'
                           : 'bg-red-100 text-red-700'
                           }`}>
-                          {product.isActive ? 'Active' : 'Inactive'}
+                          {product.isActive ? 'Đang hoạt động' : 'Ngưng hoạt động'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
@@ -378,7 +378,7 @@ const ProductList = () => {
                           <button
                             onClick={() => navigate(`/inventory/products/edit/${product.id}`)}
                             className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                            title="Edit"
+                            title="Chỉnh sửa"
                           >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
@@ -388,7 +388,7 @@ const ProductList = () => {
                               ? 'text-slate-400 hover:text-red-600 hover:bg-red-50'
                               : 'text-slate-400 hover:text-green-600 hover:bg-green-50'
                               }`}
-                            title={product.isActive ? 'Deactivate' : 'Activate'}
+                            title={product.isActive ? 'Tạm ngưng' : 'Kích hoạt'}
                           >
                             <span className="material-symbols-outlined text-[20px]">
                               {product.isActive ? 'lock' : 'lock_open'}
@@ -407,7 +407,7 @@ const ProductList = () => {
         {/* Pagination */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200">
           <p className="text-sm text-slate-600">
-            Showing page {currentPage} of {pageQuantity}
+            Trang {currentPage} / {pageQuantity}
           </p>
           <div className="flex items-center gap-2">
             <button

@@ -8,48 +8,48 @@ const SettingsMenu = () => {
   const settingsOptions = [
     {
       id: 'profile',
-      title: 'User Profile',
-      description: 'Manage your personal information and preferences',
+      title: 'Hồ sơ người dùng',
+      description: 'Quản lý thông tin cá nhân và tùy chọn của bạn',
       icon: 'account_circle',
       path: '/settings/profile',
       color: 'bg-blue-50 text-blue-600'
     },
     {
       id: 'security',
-      title: 'Security & Privacy',
-      description: 'Password, 2FA, and privacy settings',
+      title: 'Bảo mật & quyền riêng tư',
+      description: 'Mật khẩu, 2FA và các thiết lập riêng tư',
       icon: 'shield',
       path: '/settings/security',
       color: 'bg-green-50 text-green-600'
     },
     {
       id: 'notifications',
-      title: 'Notifications',
-      description: 'Configure email and push notification preferences',
+      title: 'Thông báo',
+      description: 'Thiết lập thông báo email và đẩy',
       icon: 'notifications',
       path: '/settings/notifications',
       color: 'bg-purple-50 text-purple-600'
     },
     {
       id: 'billing',
-      title: 'Billing & Subscription',
-      description: 'Manage your subscription and payment methods',
+      title: 'Thanh toán & gói cước',
+      description: 'Quản lý gói dịch vụ và phương thức thanh toán',
       icon: 'credit_card',
       path: '/settings/billing',
       color: 'bg-orange-50 text-orange-600'
     },
     {
       id: 'appearance',
-      title: 'Appearance',
-      description: 'Customize theme, language, and display settings',
+      title: 'Giao diện',
+      description: 'Tùy chỉnh chủ đề, ngôn ngữ và hiển thị',
       icon: 'palette',
       path: '/settings/appearance',
       color: 'bg-pink-50 text-pink-600'
     },
     {
       id: 'integrations',
-      title: 'Integrations',
-      description: 'Connect third-party apps and services',
+      title: 'Tích hợp',
+      description: 'Kết nối ứng dụng và dịch vụ bên thứ ba',
       icon: 'extension',
       path: '/settings/integrations',
       color: 'bg-indigo-50 text-indigo-600'
@@ -92,19 +92,19 @@ const SettingsMenu = () => {
         <div className="mt-12 rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100 p-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Need Help?</h3>
+              <h3 className="text-xl font-bold text-slate-900">Cần hỗ trợ?</h3>
               <p className="mt-1 text-sm text-slate-600">
-                Check our documentation or contact support for assistance
+                Xem tài liệu hoặc liên hệ đội hỗ trợ để được giúp đỡ
               </p>
             </div>
             <div className="flex gap-3">
               <button className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                 <span className="material-symbols-outlined text-[20px]">description</span>
-                Documentation
+                Tài liệu
               </button>
               <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors">
                 <span className="material-symbols-outlined text-[20px]">support_agent</span>
-                Contact Support
+                Liên hệ hỗ trợ
               </button>
             </div>
           </div>

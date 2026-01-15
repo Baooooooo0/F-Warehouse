@@ -27,27 +27,27 @@ const UserList = () => {
 
   const columns = [
     { header: 'ID', accessor: 'id' },
-    { header: 'Name', accessor: 'name' },
+    { header: 'Tên', accessor: 'name' },
     { header: 'Email', accessor: 'email' },
-    { header: 'Role', accessor: 'role' },
+    { header: 'Vai trò', accessor: 'role' },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       render: (row) => (
         <div className="flex gap-2">
-          <Button size="sm" variant="outline">Edit</Button>
-          <Button size="sm" variant="danger">Delete</Button>
+          <Button size="sm" variant="outline">Chỉnh sửa</Button>
+          <Button size="sm" variant="danger">Xóa</Button>
         </div>
       ),
     },
   ];
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Đang tải...</div>;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Users</h1>
-        <Button onClick={() => navigate('/users/create')}>Create User</Button>
+        <h1 className="text-3xl font-bold text-gray-900">Người dùng</h1>
+        <Button onClick={() => navigate('/users/create')}>Tạo tài khoản</Button>
       </div>
       
       <div className="bg-white rounded-lg shadow">

@@ -28,7 +28,7 @@ const Login = () => {
       await login(formData);
       navigate('/dashboard');
     } catch (error) {
-      setError('Invalid email or password');
+      setError('Email hoặc mật khẩu không đúng');
     }
   };
 
@@ -38,7 +38,7 @@ const Login = () => {
       <div className="hidden lg:flex lg:w-1/2 relative bg-[#0a0f18] flex-col justify-between p-12 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            alt="Modern warehouse shelving with dramatic blue lighting and depth"
+            alt="Kệ kho hiện đại với ánh sáng xanh"
             className="w-full h-full object-cover opacity-40 mix-blend-overlay"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDVQkbBKutMJsam_ZhrwnBxD8dyKNOvsB3cS_fqOyLHpiWqfmNMwo5fPPU3NBjRpmJlmwI2nnHugEkyJZJ-gR3tJ8LVoU_FjrRa150xjxsV7mA24umE4v1IGbvRq-V3TaLbDLcw1lmethgu3R16ZdMTyThSrQbqYi1EYPGpAk1AnAKEFCAAallhs50EsOtAbJGD2pq-LE6M3jasuJdwW5gvGC9O4WCtNroRk_BE2mQqAeKmjd66aKaq-xMB0UNweUekuG3sVx2ifIF"
           />
@@ -49,12 +49,12 @@ const Login = () => {
           <div className="flex items-center justify-center size-10 rounded-lg bg-[#135bec] text-white shadow-lg shadow-[#135bec]/30">
             <span className="material-symbols-outlined text-[24px]">inventory_2</span>
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-white">Inventory Manager</h1>
+          <h1 className="text-xl font-bold tracking-tight text-white">Quản lý kho</h1>
         </div>
         
         <div className="relative z-10 max-w-md">
           <blockquote className="text-xl font-medium leading-relaxed text-white">
-            "Streamline your logistics, track every item, and optimize your warehouse efficiency with our next-gen dashboard."
+            "Tối ưu hậu cần, theo dõi từng mặt hàng và tăng hiệu suất kho với bảng tổng quan thế hệ mới."
           </blockquote>
           <div className="mt-6 flex items-center gap-4">
             <div className="h-px w-8 bg-[#135bec]"></div>
@@ -71,14 +71,14 @@ const Login = () => {
             <div className="flex items-center justify-center size-8 rounded bg-[#135bec] text-white">
               <span className="material-symbols-outlined text-[20px]">inventory_2</span>
             </div>
-            <span className="text-lg font-bold">Inventory Manager</span>
+            <span className="text-lg font-bold">Quản lý kho</span>
           </div>
 
           {/* Header */}
           <div className="flex flex-col gap-2">
-            <h2 className="text-3xl font-black leading-tight tracking-[-0.033em] text-slate-900">Welcome Back</h2>
+            <h2 className="text-3xl font-black leading-tight tracking-[-0.033em] text-slate-900">Chào mừng trở lại</h2>
             <p className="text-slate-500 text-base font-normal">
-              Enter your credentials to access your warehouse dashboard.
+              Nhập thông tin đăng nhập để truy cập bảng tổng quan kho.
             </p>
           </div>
 
@@ -93,11 +93,11 @@ const Login = () => {
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             {/* Email Field */}
             <label className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-slate-900">Email Address</span>
+              <span className="text-sm font-medium text-slate-900">Địa chỉ email</span>
               <div className="relative">
                 <input
                   className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-[#135bec]/50 border border-slate-300 bg-white focus:border-[#135bec] h-12 placeholder:text-slate-400 px-4 text-base font-normal transition-all"
-                  placeholder="user@company.com"
+                  placeholder="nguoi@congty.com"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -113,15 +113,15 @@ const Login = () => {
             {/* Password Field */}
             <label className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-slate-900">Password</span>
+                <span className="text-sm font-medium text-slate-900">Mật khẩu</span>
                 <a className="text-sm font-semibold text-[#135bec] hover:text-[#135bec]/80 transition-colors" href="#">
-                  Forgot Password?
+                  Quên mật khẩu?
                 </a>
               </div>
               <div className="flex w-full items-stretch rounded-lg group focus-within:ring-2 focus-within:ring-[#135bec]/50 transition-all">
                 <input
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-lg text-slate-900 focus:outline-0 focus:ring-0 border border-slate-300 bg-white focus:border-[#135bec] h-12 placeholder:text-slate-400 px-4 border-r-0 text-base font-normal"
-                  placeholder="Enter your password"
+                  placeholder="Nhập mật khẩu của bạn"
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
@@ -144,35 +144,35 @@ const Login = () => {
               type="submit"
               className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-[#135bec] hover:bg-[#135bec]/90 text-white text-base font-bold tracking-[0.015em] transition-all shadow-lg shadow-[#135bec]/20 active:scale-[0.98] mt-2"
             >
-              <span>Log In</span>
+              <span>Đăng nhập</span>
             </button>
           </form>
 
           {/* Footer */}
           <div className="flex flex-col gap-6 items-center text-center">
             <p className="text-sm text-slate-500">
-              Don't have an account?
+              Chưa có tài khoản?
               <button className="font-bold text-[#135bec] hover:underline ml-1 cursor-pointer">
-                Request Access
+                Yêu cầu quyền truy cập
               </button>
             </p>
 
             <div className="w-full flex items-center gap-4">
               <div className="h-px flex-1 bg-slate-200"></div>
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Help &amp; Support</span>
+              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Hỗ trợ</span>
               <div className="h-px flex-1 bg-slate-200"></div>
             </div>
 
             <div className="flex gap-4">
               <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm font-medium text-slate-700 transition-colors">
                 <span className="material-symbols-outlined text-[18px]">contact_support</span>
-                <span>Contact Admin</span>
+                <span>Liên hệ quản trị</span>
               </button>
             </div>
           </div>
 
           <p className="text-xs text-center text-slate-400 mt-8 lg:mt-12">
-            © 2024 Inventory Systems Inc. All rights reserved.
+            © 2024 Inventory Systems Inc. Đã đăng ký bản quyền.
           </p>
         </div>
       </div>

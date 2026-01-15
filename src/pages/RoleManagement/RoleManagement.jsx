@@ -5,7 +5,7 @@ const mockRoles = [
   {
     id: 1,
     name: 'Administrator',
-    description: 'Full access to all modules and system settings.',
+    description: 'Toàn quyền truy cập mọi module và thiết lập hệ thống.',
     users: [
       { id: 1, name: 'Admin User', avatar: 'A' },
       { id: 2, name: 'John Doe', avatar: 'J' }
@@ -17,7 +17,7 @@ const mockRoles = [
   {
     id: 2,
     name: 'Warehouse Manager',
-    description: 'Can manage stock levels, view reports, but no user management.',
+    description: 'Quản lý tồn kho, xem báo cáo nhưng không quản lý người dùng.',
     users: [
       { id: 3, name: 'Mike Wilson', avatar: 'M' },
       { id: 4, name: 'Sarah Johnson', avatar: 'S' }
@@ -29,7 +29,7 @@ const mockRoles = [
   {
     id: 3,
     name: 'Inventory Clerk',
-    description: 'Can update stock levels and participate in stock counts.',
+    description: 'Cập nhật tồn kho và tham gia kiểm kê.',
     users: [
       { id: 5, name: 'Tom Brown', avatar: 'T' }
     ],
@@ -40,7 +40,7 @@ const mockRoles = [
   {
     id: 4,
     name: 'Viewer',
-    description: 'Read-only access to inventory dashboard.',
+    description: 'Chỉ xem bảng điều khiển tồn kho.',
     users: [
       { id: 6, name: 'Lisa Chen', avatar: 'L' }
     ],
@@ -51,7 +51,7 @@ const mockRoles = [
   {
     id: 5,
     name: 'Intern',
-    description: 'Restricted access to assist Warehouse Managers.',
+    description: 'Quyền hạn hạn chế để hỗ trợ quản lý kho.',
     users: [
       { id: 7, name: 'David Kim', avatar: 'D' }
     ],
@@ -62,7 +62,7 @@ const mockRoles = [
   {
     id: 6,
     name: 'Auditor',
-    description: 'Can view all data and generate reports for compliance.',
+    description: 'Xem toàn bộ dữ liệu và tạo báo cáo tuân thủ.',
     users: [
       { id: 8, name: 'Emma Davis', avatar: 'E' }
     ],
@@ -73,7 +73,7 @@ const mockRoles = [
   {
     id: 7,
     name: 'Supplier',
-    description: 'Limited access to view and update their product inventory.',
+    description: 'Quyền giới hạn để xem và cập nhật tồn kho sản phẩm của họ.',
     users: [
       { id: 9, name: 'Robert Lee', avatar: 'R' }
     ],
@@ -84,7 +84,7 @@ const mockRoles = [
   {
     id: 8,
     name: 'Customer Service',
-    description: 'Can view inventory and assist customers with stock queries.',
+    description: 'Xem tồn kho và hỗ trợ khách hàng về hàng hóa.',
     users: [
       { id: 10, name: 'Nancy White', avatar: 'N' }
     ],
@@ -95,7 +95,7 @@ const mockRoles = [
   {
     id: 9,
     name: 'Logistics Coordinator',
-    description: 'Manages shipments and tracks inventory movement.',
+    description: 'Quản lý giao hàng và theo dõi luân chuyển hàng hóa.',
     users: [
       { id: 11, name: 'Kevin Martinez', avatar: 'K' }
     ],
@@ -106,7 +106,7 @@ const mockRoles = [
   {
     id: 10,
     name: 'Quality Control',
-    description: 'Inspects inventory and flags quality issues.',
+    description: 'Kiểm tra hàng hóa và cảnh báo vấn đề chất lượng.',
     users: [
       { id: 12, name: 'Amy Taylor', avatar: 'A' }
     ],
@@ -117,7 +117,7 @@ const mockRoles = [
   {
     id: 11,
     name: 'Finance Analyst',
-    description: 'Access to inventory valuation and cost reports.',
+    description: 'Truy cập báo cáo giá trị và chi phí hàng tồn.',
     users: [
       { id: 13, name: 'Chris Anderson', avatar: 'C' }
     ],
@@ -128,7 +128,7 @@ const mockRoles = [
   {
     id: 12,
     name: 'IT Support',
-    description: 'Technical support access for system maintenance.',
+    description: 'Quyền hỗ trợ kỹ thuật cho việc bảo trì hệ thống.',
     users: [
       { id: 14, name: 'Jessica Moore', avatar: 'J' }
     ],
@@ -199,7 +199,7 @@ const RoleManagement = () => {
 
     // Validate form
     if (!formData.name.trim()) {
-      alert('Please enter a role name');
+      alert('Vui lòng nhập tên vai trò');
       return;
     }
 
@@ -219,10 +219,10 @@ const RoleManagement = () => {
       setIsModalOpen(false);
       setFormData({ name: '', isActive: true });
 
-      alert('Role created successfully!');
+      alert('Tạo vai trò thành công!');
     } catch (error) {
       console.error('Error creating role:', error);
-      alert('Failed to create role');
+      alert('Tạo vai trò thất bại');
     }
   };
 
@@ -256,21 +256,21 @@ const RoleManagement = () => {
       {/* Breadcrumb and Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-          <span>Settings</span>
+          <span>Cài đặt</span>
           <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-          <span className="text-slate-900 font-medium">Role Management</span>
+          <span className="text-slate-900 font-medium">Quản lý vai trò</span>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Role Management</h1>
-            <p className="text-slate-500 mt-1">Define access levels and permissions for your team members.</p>
+            <h1 className="text-3xl font-bold text-slate-900">Quản lý vai trò</h1>
+            <p className="text-slate-500 mt-1">Thiết lập quyền truy cập và phân quyền cho thành viên.</p>
           </div>
           <button
             onClick={handleCreateRole}
             className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
-            Create Role
+            Tạo vai trò
           </button>
         </div>
       </div>
@@ -281,7 +281,7 @@ const RoleManagement = () => {
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
           <input
             type="text"
-            placeholder="Search roles..."
+            placeholder="Tìm kiếm vai trò..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -299,9 +299,9 @@ const RoleManagement = () => {
             }}
             className="appearance-none pl-4 pr-10 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white cursor-pointer"
           >
-            <option value="all">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="all">Tất cả trạng thái</option>
+            <option value="active">Đang hoạt động</option>
+            <option value="inactive">Ngừng hoạt động</option>
           </select>
           <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px] pointer-events-none">expand_more</span>
         </div>
@@ -317,22 +317,22 @@ const RoleManagement = () => {
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Role Name
+                  Tên vai trò
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Description
+                  Mô tả
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Users
+                  Người dùng
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Status
+                  Trạng thái
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Last Modified
+                  Cập nhật cuối
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  Actions
+                  Thao tác
                 </th>
               </tr>
             </thead>
@@ -383,14 +383,14 @@ const RoleManagement = () => {
                       <button
                         onClick={() => handleEdit(role.id)}
                         className="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 rounded transition-colors"
-                        title="Edit role"
+                        title="Chỉnh sửa vai trò"
                       >
                         <span className="material-symbols-outlined text-[20px]">edit</span>
                       </button>
                       <button
                         onClick={() => handleDelete(role.id)}
                         className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                        title="Delete role"
+                        title="Xóa vai trò"
                       >
                         <span className="material-symbols-outlined text-[20px]">delete</span>
                       </button>
@@ -405,7 +405,7 @@ const RoleManagement = () => {
         {/* Pagination */}
         <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
           <div className="text-sm text-slate-600">
-            Showing {startIndex + 1}-{Math.min(endIndex, filteredRoles.length)} of {filteredRoles.length} roles
+            Hiển thị {startIndex + 1}-{Math.min(endIndex, filteredRoles.length)} / {filteredRoles.length} vai trò
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -416,7 +416,7 @@ const RoleManagement = () => {
                 : 'text-slate-700 hover:bg-slate-100'
                 }`}
             >
-              Previous
+              Trước
             </button>
             <button
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
@@ -426,7 +426,7 @@ const RoleManagement = () => {
                 : 'text-white bg-primary hover:bg-blue-700'
                 }`}
             >
-              Next
+              Tiếp
             </button>
           </div>
         </div>
@@ -438,7 +438,7 @@ const RoleManagement = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-              <h2 className="text-xl font-bold text-slate-900">Create New Role</h2>
+              <h2 className="text-xl font-bold text-slate-900">Tạo vai trò mới</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
@@ -453,7 +453,7 @@ const RoleManagement = () => {
                 {/* Role Name */}
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                    Role Name <span className="text-red-500">*</span>
+                    Tên vai trò <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -461,7 +461,7 @@ const RoleManagement = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="e.g., Warehouse Manager"
+                    placeholder="Ví dụ: Quản lý kho"
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     required
                   />
@@ -478,7 +478,7 @@ const RoleManagement = () => {
                     className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
                   />
                   <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
-                    Active Status
+                    Trạng thái hoạt động
                   </label>
                 </div>
               </div>
@@ -490,13 +490,13 @@ const RoleManagement = () => {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   type="submit"
                   className="px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
                 >
-                  Create Role
+                  Tạo vai trò
                 </button>
               </div>
             </form>

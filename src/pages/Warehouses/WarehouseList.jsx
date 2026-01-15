@@ -65,7 +65,7 @@ const WarehouseList = () => {
           </div>
           <input
             className="block w-full pl-10 pr-3 py-2.5 border-none rounded-lg leading-5 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm shadow-sm"
-            placeholder="Search warehouses by name or location"
+            placeholder="Tìm kho theo tên hoặc địa điểm"
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -81,7 +81,7 @@ const WarehouseList = () => {
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
-            All Statuses
+            Tất cả trạng thái
             <span className="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
           </button>
           <button
@@ -92,7 +92,7 @@ const WarehouseList = () => {
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
-            Active
+            Đang hoạt động
           </button>
           <button
             onClick={() => setFilterStatus('inactive')}
@@ -102,7 +102,7 @@ const WarehouseList = () => {
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
-            Inactive
+            Ngưng hoạt động
           </button>
         </div>
       </div>
@@ -113,12 +113,12 @@ const WarehouseList = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 w-16">Image</th>
-                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Warehouse Name</th>
-                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Address</th>
-                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Total Stock</th>
-                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</th>
+                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 w-16">Hình ảnh</th>
+                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Tên kho</th>
+                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Địa chỉ</th>
+                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Tổng tồn</th>
+                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500">Trạng thái</th>
+                <th className="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
@@ -161,12 +161,12 @@ const WarehouseList = () => {
                     {warehouse.status === 'active' ? (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        Active
+                        Đang hoạt động
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                        Inactive
+                        Ngưng hoạt động
                       </span>
                     )}
                   </td>
@@ -174,13 +174,13 @@ const WarehouseList = () => {
                     <div className="flex items-center justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                       <button
                         className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors"
-                        title="Edit"
+                        title="Chỉnh sửa"
                       >
                         <span className="material-symbols-outlined text-[20px]">edit</span>
                       </button>
                       <button
                         className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                        title="Delete"
+                        title="Xóa"
                       >
                         <span className="material-symbols-outlined text-[20px]">delete</span>
                       </button>
@@ -197,7 +197,7 @@ const WarehouseList = () => {
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-slate-500">
-                Showing <span className="font-medium">1</span> to <span className="font-medium">{filteredWarehouses.length}</span> of <span className="font-medium">{warehouses.length}</span> results
+                Hiển thị <span className="font-medium">1</span> đến <span className="font-medium">{filteredWarehouses.length}</span> trong <span className="font-medium">{warehouses.length}</span> kết quả
               </p>
             </div>
             <div>
@@ -206,7 +206,7 @@ const WarehouseList = () => {
                   href="#"
                   className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50"
                 >
-                  <span className="sr-only">Previous</span>
+                  <span className="sr-only">Trước</span>
                   <span className="material-symbols-outlined text-[20px]">chevron_left</span>
                 </a>
                 <a
@@ -231,7 +231,7 @@ const WarehouseList = () => {
                   href="#"
                   className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50"
                 >
-                  <span className="sr-only">Next</span>
+                  <span className="sr-only">Tiếp</span>
                   <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                 </a>
               </nav>

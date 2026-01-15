@@ -33,7 +33,7 @@ const UserCreate = () => {
     if (password.match(/[0-9]/)) strength++;
     if (password.match(/[^a-zA-Z0-9]/)) strength++;
 
-    const labels = ['Weak', 'Fair', 'Good', 'Strong'];
+    const labels = ['Yếu', 'Trung bình', 'Tốt', 'Mạnh'];
     const colors = ['red', 'orange', 'yellow', 'green'];
     
     return {
@@ -49,7 +49,7 @@ const UserCreate = () => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      alert('Mật khẩu không khớp!');
       return;
     }
 
@@ -59,28 +59,28 @@ const UserCreate = () => {
       navigate('/users');
     } catch (error) {
       console.error('Error creating user:', error);
-      alert('Error creating user. Please try again.');
+      alert('Tạo người dùng thất bại. Vui lòng thử lại.');
     }
   };
 
   const roles = [
     {
       value: 'viewer',
-      label: 'Viewer',
+      label: 'Chỉ xem',
       icon: '👁️',
-      description: 'Read-only access to inventory, warehouses, and reports. Cannot edit data.'
+      description: 'Chỉ xem tồn kho, kho hàng và báo cáo; không được chỉnh sửa.'
     },
     {
       value: 'manager',
-      label: 'Manager',
+      label: 'Quản lý',
       icon: '📝',
-      description: 'Can add/edit products, manage stock levels, and view all reports.'
+      description: 'Có thể thêm/sửa sản phẩm, quản lý tồn kho và xem tất cả báo cáo.'
     },
     {
       value: 'admin',
-      label: 'Admin',
+      label: 'Quản trị',
       icon: '🛡️',
-      description: 'Full system access. Can manage users, billing, and system configuration.'
+      description: 'Toàn quyền hệ thống, quản lý người dùng, thanh toán và cấu hình.'
     }
   ];
 
@@ -88,8 +88,8 @@ const UserCreate = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-black tracking-tight text-slate-900">Register New User</h1>
-        <p className="text-slate-500 text-base">Create credentials for a new inventory manager and assign their role permissions.</p>
+        <h1 className="text-3xl font-black tracking-tight text-slate-900">Đăng ký người dùng mới</h1>
+        <p className="text-slate-500 text-base">Tạo tài khoản cho nhân sự kho và gán quyền phù hợp.</p>
       </div>
 
       {/* Form */}
@@ -99,15 +99,15 @@ const UserCreate = () => {
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-slate-900 border-b border-gray-100 pb-3 flex items-center gap-2">
               <span className="text-blue-600">👤</span>
-              Account Details
+              Thông tin tài khoản
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Full Name</label>
+                <label className="text-sm font-medium text-slate-700">Họ và tên</label>
                 <div className="relative">
                   <input
                     className="w-full h-11 bg-slate-50 border border-slate-300 rounded-lg px-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 transition-all"
-                    placeholder="e.g. Jane Doe"
+                    placeholder="Ví dụ: Jane Doe"
                     type="text"
                     name="name"
                     value={formData.name}
@@ -117,11 +117,11 @@ const UserCreate = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Username</label>
+                <label className="text-sm font-medium text-slate-700">Tên đăng nhập</label>
                 <div className="relative group">
                   <input
                     className="w-full h-11 bg-slate-50 border border-slate-300 rounded-lg pl-4 pr-10 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 transition-all"
-                    placeholder="e.g. jdoe_admin"
+                    placeholder="Ví dụ: jdoe_admin"
                     type="text"
                     name="username"
                     value={formData.username}
@@ -131,14 +131,14 @@ const UserCreate = () => {
                 </div>
               </div>
               <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium text-slate-700">Email Address</label>
+                <label className="text-sm font-medium text-slate-700">Email</label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                     📧
                   </span>
                   <input
                     className="w-full h-11 bg-slate-50 border border-slate-300 rounded-lg pl-11 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 transition-all"
-                    placeholder="jane.doe@company.com"
+                    placeholder="jane.doe@congty.com"
                     type="email"
                     name="email"
                     value={formData.email}
@@ -154,11 +154,11 @@ const UserCreate = () => {
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-slate-900 border-b border-gray-100 pb-3 flex items-center gap-2">
               <span className="text-blue-600">🔒</span>
-              Security
+              Bảo mật
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Password</label>
+                <label className="text-sm font-medium text-slate-700">Mật khẩu</label>
                 <div className="relative">
                   <input
                     className="w-full h-11 bg-slate-50 border border-slate-300 rounded-lg px-4 pr-10 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 transition-all"
@@ -191,13 +191,13 @@ const UserCreate = () => {
                       ))}
                     </div>
                     <p className={`text-xs text-${passwordStrength.color}-600 mt-1`}>
-                      {passwordStrength.label} password
+                      Mật khẩu {passwordStrength.label}
                     </p>
                   </>
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Confirm Password</label>
+                <label className="text-sm font-medium text-slate-700">Xác nhận mật khẩu</label>
                 <div className="relative">
                   <input
                     className="w-full h-11 bg-slate-50 border border-slate-300 rounded-lg px-4 pr-10 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 transition-all"
@@ -216,7 +216,7 @@ const UserCreate = () => {
                   </button>
                 </div>
                 {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                  <p className="text-xs text-red-600 mt-1">Passwords do not match</p>
+                  <p className="text-xs text-red-600 mt-1">Mật khẩu không khớp</p>
                 )}
               </div>
               <div className="md:col-span-2">
@@ -229,8 +229,8 @@ const UserCreate = () => {
                     onChange={handleChange}
                   />
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-slate-900">Require password reset</span>
-                    <span className="text-xs text-slate-500">User will be forced to change their password upon first login.</span>
+                    <span className="text-sm font-medium text-slate-900">Yêu cầu đổi mật khẩu</span>
+                    <span className="text-xs text-slate-500">Người dùng sẽ phải đổi mật khẩu trong lần đăng nhập đầu tiên.</span>
                   </div>
                 </label>
               </div>
@@ -241,7 +241,7 @@ const UserCreate = () => {
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-slate-900 border-b border-gray-100 pb-3 flex items-center gap-2">
               <span className="text-blue-600">⚙️</span>
-              Role Assignment
+              Phân quyền
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {roles.map((role) => (
@@ -279,20 +279,20 @@ const UserCreate = () => {
             type="button"
             onClick={() => navigate('/users')}
           >
-            Cancel
+            Hủy
           </button>
           <button
             className="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
             type="submit"
           >
             <span>➕</span>
-            Create Account
+            Tạo tài khoản
           </button>
         </div>
       </form>
 
       <p className="text-center text-xs text-slate-400 py-4">
-        © 2024 InvManager System. All actions are logged.
+        © 2024 InvManager System. Mọi thao tác đều được ghi nhận.
       </p>
     </div>
   );

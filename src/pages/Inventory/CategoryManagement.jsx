@@ -56,12 +56,12 @@ const CategoryManagement = () => {
 
         // Validate form
         if (!formData.name.trim()) {
-            alert('Please enter a category name');
+            alert('Vui lòng nhập tên danh mục');
             return;
         }
 
         if (!formData.description.trim()) {
-            alert('Please enter a category description');
+            alert('Vui lòng nhập mô tả danh mục');
             return;
         }
 
@@ -81,17 +81,17 @@ const CategoryManagement = () => {
                 // Refresh categories list
                 fetchCategories();
 
-                alert('Category created successfully!');
+                alert('Tạo danh mục thành công!');
             } else {
                 console.error('❌ Response error:', response);
-                alert(response.message || 'Failed to create category');
+                alert(response.message || 'Không thể tạo danh mục');
             }
         } catch (error) {
             console.error('💥 Error creating category:', error);
             console.error('Error response:', error.response);
             console.error('Error data:', error.response?.data);
             console.error('Error message:', error.response?.data?.message);
-            alert(error.response?.data?.message || 'Failed to create category');
+            alert(error.response?.data?.message || 'Không thể tạo danh mục');
         }
     };
 
@@ -111,11 +111,11 @@ const CategoryManagement = () => {
             if (response.code === 'success') {
                 fetchCategories(); // Refresh the list
             } else {
-                alert(response.message || 'Failed to update category status');
+                alert(response.message || 'Không thể cập nhật trạng thái danh mục');
             }
         } catch (error) {
             console.error('Error locking category:', error);
-            alert('Failed to update category status');
+            alert('Không thể cập nhật trạng thái danh mục');
         }
     };
 
@@ -123,17 +123,17 @@ const CategoryManagement = () => {
         <div className="flex flex-col gap-6">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-slate-500">
-                <Link to="/dashboard" className="hover:text-slate-900">Home</Link>
+                <Link to="/dashboard" className="hover:text-slate-900">Trang chủ</Link>
                 <span>/</span>
-                <Link to="/inventory/products" className="hover:text-slate-900">Inventory</Link>
+                <Link to="/inventory/products" className="hover:text-slate-900">Tồn kho</Link>
                 <span>/</span>
-                <span className="text-slate-900 font-medium">Categories</span>
+                <span className="text-slate-900 font-medium">Danh mục</span>
             </nav>
 
             {/* Header */}
             <div className="flex flex-col gap-2">
-                <h1 className="text-4xl font-bold text-slate-900">Category Management</h1>
-                <p className="text-base text-slate-500">Manage and organize your product categories.</p>
+                <h1 className="text-4xl font-bold text-slate-900">Quản lý danh mục</h1>
+                <p className="text-base text-slate-500">Quản lý và sắp xếp các danh mục sản phẩm.</p>
             </div>
 
             {/* Search and Actions Bar */}
@@ -144,7 +144,7 @@ const CategoryManagement = () => {
                     </span>
                     <input
                         type="text"
-                        placeholder="Search categories..."
+                        placeholder="Tìm kiếm danh mục..."
                         value={searchQuery}
                         onChange={(e) => {
                             setSearchQuery(e.target.value);
@@ -159,7 +159,7 @@ const CategoryManagement = () => {
                         className="flex items-center gap-2 h-11 px-4 rounded-lg bg-primary text-sm font-bold text-white hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20"
                     >
                         <span className="material-symbols-outlined text-[20px]">add</span>
-                        Add Category
+                        Thêm danh mục
                     </button>
                 </div>
             </div>
@@ -171,22 +171,22 @@ const CategoryManagement = () => {
                         <thead className="bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Category Name
+                                    Tên danh mục
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Status
+                                    Trạng thái
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Created By
+                                    Người tạo
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Updated By
+                                    Người cập nhật
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Last Updated
+                                    Cập nhật gần nhất
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Actions
+                                    Thao tác
                                 </th>
                             </tr>
                         </thead>
@@ -194,13 +194,13 @@ const CategoryManagement = () => {
                             {loading ? (
                                 <tr>
                                     <td colSpan="6" className="px-6 py-8 text-center text-slate-500">
-                                        Loading categories...
+                                        Đang tải danh mục...
                                     </td>
                                 </tr>
                             ) : categories.length === 0 ? (
                                 <tr>
                                     <td colSpan="6" className="px-6 py-8 text-center text-slate-500">
-                                        No categories found
+                                        Không tìm thấy danh mục
                                     </td>
                                 </tr>
                             ) : (
@@ -219,7 +219,7 @@ const CategoryManagement = () => {
                                                 }`}>
                                                 <span className={`h-1.5 w-1.5 rounded-full ${category.isActive ? 'bg-green-600' : 'bg-slate-400'
                                                     }`}></span>
-                                                {category.isActive ? 'Active' : 'Inactive'}
+                                                {category.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
@@ -239,7 +239,7 @@ const CategoryManagement = () => {
                                                         ? 'text-slate-400 hover:text-red-600 hover:bg-red-50'
                                                         : 'text-slate-400 hover:text-green-600 hover:bg-green-50'
                                                         }`}
-                                                    title={category.isActive ? 'Deactivate' : 'Activate'}
+                                                    title={category.isActive ? 'Tạm ngưng' : 'Kích hoạt'}
                                                 >
                                                     <span className="material-symbols-outlined text-[20px]">
                                                         {category.isActive ? 'lock' : 'lock_open'}
@@ -257,7 +257,7 @@ const CategoryManagement = () => {
                 {/* Pagination */}
                 <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200">
                     <p className="text-sm text-slate-600">
-                        Showing page {currentPage} of {pageQuantity}
+                        Trang {currentPage} / {pageQuantity}
                     </p>
                     <div className="flex items-center gap-2">
                         <button
@@ -300,7 +300,7 @@ const CategoryManagement = () => {
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
                         {/* Modal Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-                            <h2 className="text-xl font-bold text-slate-900">Add New Category</h2>
+                            <h2 className="text-xl font-bold text-slate-900">Thêm danh mục mới</h2>
                             <button
                                 onClick={() => setIsModalOpen(false)}
                                 className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
@@ -315,7 +315,7 @@ const CategoryManagement = () => {
                                 {/* Category Name */}
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                                        Category Name <span className="text-red-500">*</span>
+                                        Tên danh mục <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -323,7 +323,7 @@ const CategoryManagement = () => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleInputChange}
-                                        placeholder="e.g., Electronics"
+                                        placeholder="Ví dụ: Điện tử"
                                         className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                         required
                                     />
@@ -332,7 +332,7 @@ const CategoryManagement = () => {
                                 {/* Description */}
                                 <div>
                                     <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-2">
-                                        Description <span className="text-red-500">*</span>
+                                        Mô tả <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -340,7 +340,7 @@ const CategoryManagement = () => {
                                         name="description"
                                         value={formData.description}
                                         onChange={handleInputChange}
-                                        placeholder="e.g., Gadgets, phones & laptops"
+                                        placeholder="Ví dụ: Đồ công nghệ, điện thoại, laptop"
                                         className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                         required
                                     />
@@ -354,13 +354,13 @@ const CategoryManagement = () => {
                                     onClick={() => setIsModalOpen(false)}
                                     className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                                 >
-                                    Cancel
+                                    Hủy
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
                                 >
-                                    Add Category
+                                    Thêm danh mục
                                 </button>
                             </div>
                         </form>

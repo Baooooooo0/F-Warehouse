@@ -15,20 +15,20 @@ const AdminLayout = () => {
   };
 
   const menuItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/warehouses', label: 'Warehouses', icon: 'warehouse' },
+    { path: '/dashboard', label: 'Tổng quan', icon: 'dashboard' },
+    { path: '/warehouses', label: 'Kho hàng', icon: 'warehouse' },
     {
-      label: 'Inventory',
+      label: 'Tồn kho',
       icon: 'inventory_2',
       isExpandable: true,
       children: [
-        { path: '/inventory/products', label: 'Products', icon: 'package_2' },
-        { path: '/inventory/categories', label: 'Category Management', icon: 'category' },
+        { path: '/inventory/products', label: 'Sản phẩm', icon: 'package_2' },
+        { path: '/inventory/categories', label: 'Quản lý danh mục', icon: 'category' },
       ]
     },
-    { path: '/role-management', label: 'Role Management', icon: 'admin_panel_settings' },
-    { path: '/users', label: 'Users', icon: 'group' },
-    { path: '/settings', label: 'Settings', icon: 'settings' },
+    { path: '/role-management', label: 'Quản lý vai trò', icon: 'admin_panel_settings' },
+    { path: '/users', label: 'Người dùng', icon: 'group' },
+    { path: '/settings', label: 'Cài đặt', icon: 'settings' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -46,8 +46,8 @@ const AdminLayout = () => {
                 <span className="material-symbols-outlined text-[24px]">inventory_2</span>
               </div>
               <div className="flex flex-col">
-                <h1 className="text-base font-bold leading-normal text-slate-900">Inventory Mgr</h1>
-                <p className="text-sm font-normal leading-normal text-slate-500">Admin Console</p>
+                <h1 className="text-base font-bold leading-normal text-slate-900">Quản lý kho</h1>
+                <p className="text-sm font-normal leading-normal text-slate-500">Tổng quan</p>
               </div>
             </div>
 
@@ -120,14 +120,14 @@ const AdminLayout = () => {
               className="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             >
               <span className="material-symbols-outlined text-[24px]">settings</span>
-              <p className="text-sm font-medium leading-normal">Settings</p>
+              <p className="text-sm font-medium leading-normal">Cài đặt</p>
             </Link>
             <button
               onClick={handleLogout}
               className="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left"
             >
               <span className="material-symbols-outlined text-[24px]">logout</span>
-              <p className="text-sm font-medium leading-normal">Logout</p>
+              <p className="text-sm font-medium leading-normal">Đăng xuất</p>
             </button>
           </div>
         </div>
@@ -144,28 +144,28 @@ const AdminLayout = () => {
             >
               <span className="material-symbols-outlined">menu</span>
             </button>
-            <h2 className="text-lg font-bold text-slate-900">Dashboard</h2>
+            <h2 className="text-lg font-bold text-slate-900">Tổng quan</h2>
           </div>
 
           <div className="hidden items-center gap-8 lg:flex">
             <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900">
               {(() => {
                 // Check for inventory sub-pages
-                const inventoryItem = menuItems.find(item => item.isExpandable && item.label === 'Inventory');
+                const inventoryItem = menuItems.find(item => item.isExpandable && item.label === 'Tồn kho');
                 if (inventoryItem && location.pathname.startsWith('/inventory')) {
                   const activeChild = inventoryItem.children.find(child => child.path === location.pathname);
-                  return activeChild?.label || 'Inventory';
+                  return activeChild?.label || 'Tồn kho';
                 }
                 // Check for regular menu items
                 const activeItem = menuItems.find(item => item.path === location.pathname);
-                return activeItem?.label || 'Dashboard';
+                return activeItem?.label || 'Tổng quan';
               })()}
             </h2>
             <div className="relative flex w-64 items-center">
               <span className="material-symbols-outlined absolute left-3 text-slate-500">search</span>
               <input
                 className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary"
-                placeholder="Search inventory..."
+                placeholder="Tìm kiếm tồn kho..."
               />
             </div>
           </div>
@@ -177,7 +177,7 @@ const AdminLayout = () => {
                 className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20"
               >
                 <span className="material-symbols-outlined text-[20px]">add</span>
-                <span className="hidden sm:inline">Add Warehouse</span>
+                <span className="hidden sm:inline">Thêm kho</span>
               </button>
             )}
             {location.pathname === '/products' && (
@@ -186,13 +186,13 @@ const AdminLayout = () => {
                 className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20"
               >
                 <span className="material-symbols-outlined text-[20px]">add</span>
-                <span className="hidden sm:inline">Add Product</span>
+                <span className="hidden sm:inline">Thêm sản phẩm</span>
               </button>
             )}
             {location.pathname === '/dashboard' && (
               <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600">
                 <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-                <span className="hidden sm:inline">Reorder Stock</span>
+                <span className="hidden sm:inline">Đặt bổ sung hàng</span>
               </button>
             )}
             <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50 text-slate-500 hover:text-slate-900 transition-colors relative hover:bg-slate-100">
@@ -202,7 +202,7 @@ const AdminLayout = () => {
             <div
               className="h-10 w-10 rounded-full bg-center bg-cover border border-slate-200 cursor-pointer shadow-sm"
               style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXD0uPj9cJ5otvYXvEmJ43xjNvY5bKhLUO9lOurWBrtcYPGj2s96xohpGyqoOjN6m3HQywuAumJiZiWWlDwr0gY52WWYp0nbPlt3WdFEUcpQZItk-cfCxROHh67w5qnxMROk54-xiOPRtKvUHVJYgwQkgYL_q7jhaBePFUTCi9ZJ2fgfv39nlM1IYD2xuS0XeVULIw5407HBOP_1QmPP--ThCyn5h2_KTgdut4E7pblvtI1dYbegRLn52yWYijBQWylSoxHDHkxS2d')" }}
-              title={user?.name || 'User'}
+              title={user?.name || 'Người dùng'}
             />
           </div>
         </header>
