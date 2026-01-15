@@ -15,7 +15,6 @@ import ProductAdd from '../pages/Products/ProductAdd';
 import ProductEdit from '../pages/Products/ProductEdit';
 import LowStockProducts from '../pages/Products/LowStockProducts';
 import CategoryManagement from '../pages/Inventory/CategoryManagement';
-import RoleManagement from '../pages/RoleManagement/RoleManagement';
 import Login from '../pages/Login/Login';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 
@@ -79,10 +78,6 @@ const router = createBrowserRouter([
       {
         path: 'inventory/categories',
         element: <CategoryManagement />,
-      },
-      {
-        path: 'role-management',
-        element: <RoleManagement />,
       },
       {
         path: 'settings',
