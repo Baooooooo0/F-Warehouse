@@ -17,7 +17,7 @@ const LowStockProducts = () => {
     const [categories, setCategories] = useState([]);
     const [warehouses, setWarehouses] = useState([]);
 
-    const THRESHOLD = 100; // Default threshold for low stock
+    const THRESHOLD = 100; // Ngưỡng mặc định cho hàng tồn kho thấp
 
     useEffect(() => {
         fetchCategories();
@@ -35,7 +35,7 @@ const LowStockProducts = () => {
                 setCategories(response.data || []);
             }
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Lỗi khi tải danh mục:', error);
         }
     };
 
@@ -46,7 +46,7 @@ const LowStockProducts = () => {
                 setWarehouses(response.data || []);
             }
         } catch (error) {
-            console.error('Error fetching warehouses:', error);
+            console.error('Lỗi khi tải kho hàng:', error);
         }
     };
 
@@ -64,10 +64,10 @@ const LowStockProducts = () => {
             const response = await productAPI.getAll(params);
 
             if (response.code === 'success') {
-                // Filter products with quantity < THRESHOLD
+                // Lọc sản phẩm có số lượng < THRESHOLD
                 let filtered = (response.data || []).filter(p => p.quantity < THRESHOLD);
 
-                // Apply status filter
+                // Áp dụng bộ lọc trạng thái
                 if (statusFilter === 'critical') {
                     filtered = filtered.filter(p => p.quantity > 0 && p.quantity <= 10);
                 } else if (statusFilter === 'low') {
@@ -79,7 +79,7 @@ const LowStockProducts = () => {
                 setLowStockProducts(filtered);
             }
         } catch (error) {
-            console.error('Error fetching low stock products:', error);
+            console.error('Lỗi khi tải sản phẩm tồn kho thấp:', error);
             setLowStockProducts([]);
         } finally {
             setLoading(false);
@@ -88,11 +88,11 @@ const LowStockProducts = () => {
 
     const getProductStatus = (quantity) => {
         if (quantity === 0) {
-            return { text: 'Depleted', color: 'bg-red-100 text-red-700' };
+            return { text: 'Hết hàng', color: 'bg-red-100 text-red-700' };
         } else if (quantity <= 10) {
-            return { text: 'Critical', color: 'bg-red-100 text-red-700' };
+            return { text: 'Nghiêm trọng', color: 'bg-red-100 text-red-700' };
         } else {
-            return { text: 'Low Stock', color: 'bg-orange-100 text-orange-700' };
+            return { text: 'Tồn kho thấp', color: 'bg-orange-100 text-orange-700' };
         }
     };
 
@@ -100,18 +100,18 @@ const LowStockProducts = () => {
         <div className="flex flex-col gap-6">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-slate-500">
-                <Link to="/inventory/products" className="hover:text-slate-900">Inventory</Link>
+                <Link to="/inventory/products" className="hover:text-slate-900">Kho hàng</Link>
                 <span>›</span>
-                <Link to="/inventory/products" className="hover:text-slate-900">Products</Link>
+                <Link to="/inventory/products" className="hover:text-slate-900">Sản phẩm</Link>
                 <span>›</span>
-                <span className="text-primary font-medium">Low Stock</span>
+                <span className="text-primary font-medium">Tồn kho thấp</span>
             </nav>
 
             {/* Header */}
             <div className="flex flex-col gap-2">
-                <h1 className="text-4xl font-bold text-slate-900">All Low Stock Products</h1>
+                <h1 className="text-4xl font-bold text-slate-900">Tất cả sản phẩm tồn kho thấp</h1>
                 <p className="text-base text-slate-500">
-                    Review all products currently below the low stock threshold ({THRESHOLD}) or depleted. Prioritize restocking based on status.
+                    Xem tất cả sản phẩm hiện đang dưới ngưỡng tồn kho thấp ({THRESHOLD}) hoặc đã hết hàng. Ưu tiên nhập hàng dựa trên trạng thái.
                 </p>
             </div>
 
@@ -119,11 +119,11 @@ const LowStockProducts = () => {
             <div className="flex items-center gap-3">
                 <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
                     <span className="material-symbols-outlined text-[20px]">download</span>
-                    Export List
+                    Xuất danh sách
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                     <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
-                    Create Order
+                    Tạo đơn hàng
                 </button>
             </div>
 
@@ -135,7 +135,7 @@ const LowStockProducts = () => {
                     </span>
                     <input
                         type="text"
-                        placeholder="Search by product name, SKU..."
+                        placeholder="Tìm kiếm theo tên sản phẩm, SKU..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full h-11 pl-10 pr-4 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -147,7 +147,7 @@ const LowStockProducts = () => {
                         onChange={(e) => setCategoryFilter(e.target.value)}
                         className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                     >
-                        <option value="all">All Categories</option>
+                        <option value="all">Tất cả danh mục</option>
                         {categories.map((category) => (
                             <option key={category.id} value={category.id}>
                                 {category.name}
@@ -159,7 +159,7 @@ const LowStockProducts = () => {
                         onChange={(e) => setWarehouseFilter(e.target.value)}
                         className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                     >
-                        <option value="all">All Warehouses</option>
+                        <option value="all">Tất cả kho hàng</option>
                         {warehouses.map((warehouse) => (
                             <option key={warehouse.id} value={warehouse.id}>
                                 {warehouse.name}
@@ -171,10 +171,10 @@ const LowStockProducts = () => {
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="h-11 px-4 pr-10 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                     >
-                        <option value="all">All Statuses</option>
-                        <option value="critical">Critical</option>
-                        <option value="low">Low Stock</option>
-                        <option value="depleted">Depleted</option>
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="critical">Nghiêm trọng</option>
+                        <option value="low">Tồn kho thấp</option>
+                        <option value="depleted">Hết hàng</option>
                     </select>
                 </div>
             </div>
@@ -186,28 +186,28 @@ const LowStockProducts = () => {
                         <thead className="bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Image
+                                    Hình ảnh
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Product Name
+                                    Tên sản phẩm
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Category
+                                    Danh mục
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Warehouse
+                                    Kho hàng
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    QTY
+                                    SL
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Threshold
+                                    Ngưỡng
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Status
+                                    Trạng thái
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Actions
+                                    Thao tác
                                 </th>
                             </tr>
                         </thead>
@@ -215,13 +215,13 @@ const LowStockProducts = () => {
                             {loading ? (
                                 <tr>
                                     <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
-                                        Loading low stock products...
+                                        Đang tải sản phẩm tồn kho thấp...
                                     </td>
                                 </tr>
                             ) : lowStockProducts.length === 0 ? (
                                 <tr>
                                     <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
-                                        No low stock products found
+                                        Không tìm thấy sản phẩm tồn kho thấp
                                     </td>
                                 </tr>
                             ) : (
@@ -253,7 +253,7 @@ const LowStockProducts = () => {
                                                             </span>
                                                         ))
                                                     ) : (
-                                                        <span className="text-sm text-slate-400">No category</span>
+                                                        <span className="text-sm text-slate-400">Không có danh mục</span>
                                                     )}
                                                 </div>
                                             </td>
@@ -270,17 +270,17 @@ const LowStockProducts = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.color}`}>
-                                                    <span className={`h-1.5 w-1.5 rounded-full ${status.text === 'Critical' || status.text === 'Depleted' ? 'bg-red-600' : 'bg-orange-600'}`}></span>
+                                                    <span className={`h-1.5 w-1.5 rounded-full ${status.text === 'Nghiêm trọng' || status.text === 'Hết hàng' ? 'bg-red-600' : 'bg-orange-600'}`}></span>
                                                     {status.text}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
-                                                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="View details">
+                                                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Xem chi tiết">
                                                         <span className="material-symbols-outlined text-[20px]">visibility</span>
                                                     </button>
                                                     <button className="px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
-                                                        Order More
+                                                        Đặt thêm
                                                     </button>
                                                 </div>
                                             </td>
@@ -295,20 +295,20 @@ const LowStockProducts = () => {
                 {/* Pagination */}
                 <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200">
                     <p className="text-sm text-slate-600">
-                        Showing {lowStockProducts.length} low stock products (threshold: {THRESHOLD})
+                        Đang hiển thị {lowStockProducts.length} sản phẩm tồn kho thấp (ngưỡng: {THRESHOLD})
                     </p>
                     <div className="flex items-center gap-2">
                         <button
                             className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={currentPage === 1}
                         >
-                            Previous
+                            Trước
                         </button>
                         <button className="min-w-[40px] h-10 px-3 rounded-lg bg-primary text-sm font-semibold text-white">
                             1
                         </button>
                         <button className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-blue-700 rounded-lg transition-colors">
-                            Next
+                            Sau
                         </button>
                     </div>
                 </div>
