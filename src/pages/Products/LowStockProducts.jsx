@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { productAPI } from '../../api/product.api';
 import { categoryAPI } from '../../api/category.api';
 import { warehouseAPI } from '../../api/warehouse.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const LowStockProducts = () => {
     const navigate = useNavigate();
@@ -22,6 +23,8 @@ const LowStockProducts = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [orderQuantity, setOrderQuantity] = useState('');
     const [orderLoading, setOrderLoading] = useState(false);
+
+    const toast = useToast();
 
     const THRESHOLD = 100; // Ngưỡng mặc định cho hàng tồn kho thấp
 
@@ -116,7 +119,7 @@ const LowStockProducts = () => {
 
     const handleOrderSubmit = async () => {
         if (!orderQuantity || Number(orderQuantity) <= 0) {
-            alert('Vui lòng nhập số lượng hợp lệ');
+            toast.warning('Vui lòng nhập số lượng hợp lệ');
             return;
         }
 
@@ -125,15 +128,15 @@ const LowStockProducts = () => {
             const response = await productAPI.orderItem(selectedProduct.id, Number(orderQuantity));
 
             if (response.code === 'success') {
-                alert(response.message || 'Nhập hàng thành công!');
+                toast.success(response.message || 'Nhập hàng thành công!');
                 handleCloseOrderModal();
                 fetchLowStockProducts(); // Refresh danh sách
             } else {
-                alert(response.message || 'Có lỗi xảy ra');
+                toast.error(response.message || 'Có lỗi xảy ra');
             }
         } catch (error) {
             console.error('Lỗi khi nhập hàng:', error);
-            alert(error.response?.data?.message || 'Có lỗi xảy ra khi nhập hàng');
+            toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi nhập hàng');
         } finally {
             setOrderLoading(false);
         }

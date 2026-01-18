@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { categoryAPI } from '../../api/category.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const CategoryManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -15,6 +16,8 @@ const CategoryManagement = () => {
         name: '',
         description: ''
     });
+
+    const toast = useToast();
 
     // Fetch categories on mount and when search/page changes
     useEffect(() => {
@@ -56,12 +59,12 @@ const CategoryManagement = () => {
 
         // Validate form
         if (!formData.name.trim()) {
-            alert('Vui lòng nhập tên danh mục');
+            toast.warning('Vui lòng nhập tên danh mục');
             return;
         }
 
         if (!formData.description.trim()) {
-            alert('Vui lòng nhập mô tả danh mục');
+            toast.warning('Vui lòng nhập mô tả danh mục');
             return;
         }
 
@@ -81,17 +84,17 @@ const CategoryManagement = () => {
                 // Refresh categories list
                 fetchCategories();
 
-                alert('Tạo danh mục thành công!');
+                toast.success('Tạo danh mục thành công!');
             } else {
                 console.error('❌ Response error:', response);
-                alert(response.message || 'Không thể tạo danh mục');
+                toast.error(response.message || 'Không thể tạo danh mục');
             }
         } catch (error) {
             console.error('💥 Error creating category:', error);
             console.error('Error response:', error.response);
             console.error('Error data:', error.response?.data);
             console.error('Error message:', error.response?.data?.message);
-            alert(error.response?.data?.message || 'Không thể tạo danh mục');
+            toast.error(error.response?.data?.message || 'Không thể tạo danh mục');
         }
     };
 
@@ -110,12 +113,13 @@ const CategoryManagement = () => {
             const response = await categoryAPI.lock(id, currentStatus);
             if (response.code === 'success') {
                 fetchCategories(); // Refresh the list
+                toast.success(currentStatus ? 'Tạm ngưng danh mục thành công!' : 'Kích hoạt danh mục thành công!');
             } else {
-                alert(response.message || 'Không thể cập nhật trạng thái danh mục');
+                toast.error(response.message || 'Không thể cập nhật trạng thái danh mục');
             }
         } catch (error) {
             console.error('Error locking category:', error);
-            alert('Không thể cập nhật trạng thái danh mục');
+            toast.error('Không thể cập nhật trạng thái danh mục');
         }
     };
 

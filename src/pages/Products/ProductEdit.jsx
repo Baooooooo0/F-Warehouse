@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { productAPI } from '../../api/product.api';
 import { categoryAPI } from '../../api/category.api';
 import { warehouseAPI } from '../../api/warehouse.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const ProductEdit = () => {
     const { id } = useParams();
@@ -11,6 +12,7 @@ const ProductEdit = () => {
     const [fetchingProduct, setFetchingProduct] = useState(true);
     const [categories, setCategories] = useState([]);
     const [warehouses, setWarehouses] = useState([]);
+    const toast = useToast();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -53,12 +55,12 @@ const ProductEdit = () => {
 
                 console.log('✅ Form pre-filled with product data');
             } else {
-                alert('Product not found');
+                toast.error('Không tìm thấy sản phẩm');
                 navigate('/inventory/products');
             }
         } catch (error) {
             console.error('💥 Error fetching product:', error);
-            alert('Failed to load product details');
+            toast.error('Không thể tải thông tin sản phẩm');
             navigate('/inventory/products');
         } finally {
             setFetchingProduct(false);
@@ -125,7 +127,7 @@ const ProductEdit = () => {
         e.preventDefault();
 
         if (!formData.name.trim() || !formData.warehouseId) {
-            alert('Please fill in all required fields (Name and Warehouse)');
+            toast.warning('Vui lòng điền đầy đủ các trường bắt buộc (Tên và Kho hàng)');
             return;
         }
 
@@ -160,17 +162,17 @@ const ProductEdit = () => {
             console.log('✅ API Response:', response);
 
             if (response.code === 'success') {
-                alert('Product updated successfully!');
+                toast.success('Cập nhật sản phẩm thành công!');
                 navigate('/inventory/products');
             } else {
                 console.error('❌ Response error:', response);
-                alert(response.message || 'Failed to update product');
+                toast.error(response.message || 'Không thể cập nhật sản phẩm');
             }
         } catch (error) {
             console.error('💥 Error updating product:', error);
             console.error('Error response:', error.response);
             console.error('Error data:', error.response?.data);
-            alert(error.response?.data?.message || 'Failed to update product');
+            toast.error(error.response?.data?.message || 'Không thể cập nhật sản phẩm');
         } finally {
             setLoading(false);
         }

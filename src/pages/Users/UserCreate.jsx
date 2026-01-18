@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userAPI } from '../../api/user.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const UserCreate = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: '',
     username: '',
@@ -26,7 +28,7 @@ const UserCreate = () => {
 
   const getPasswordStrength = (password) => {
     if (!password) return { strength: 0, label: '', color: 'slate' };
-    
+
     let strength = 0;
     if (password.length >= 8) strength++;
     if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
@@ -35,7 +37,7 @@ const UserCreate = () => {
 
     const labels = ['Yếu', 'Trung bình', 'Tốt', 'Mạnh'];
     const colors = ['red', 'orange', 'yellow', 'green'];
-    
+
     return {
       strength,
       label: labels[strength - 1] || '',
@@ -47,19 +49,20 @@ const UserCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      alert('Mật khẩu không khớp!');
+      toast.warning('Mật khẩu không khớp!');
       return;
     }
 
     try {
       const { confirmPassword, requirePasswordReset, ...userData } = formData;
       await userAPI.create(userData);
+      toast.success('Tạo người dùng thành công!');
       navigate('/users');
     } catch (error) {
       console.error('Error creating user:', error);
-      alert('Tạo người dùng thất bại. Vui lòng thử lại.');
+      toast.error('Tạo người dùng thất bại. Vui lòng thử lại.');
     }
   };
 
@@ -182,11 +185,10 @@ const UserCreate = () => {
                       {[1, 2, 3, 4].map((level) => (
                         <div
                           key={level}
-                          className={`flex-1 rounded-full ${
-                            level <= passwordStrength.strength
+                          className={`flex-1 rounded-full ${level <= passwordStrength.strength
                               ? `bg-${passwordStrength.color}-500`
                               : 'bg-slate-200'
-                          }`}
+                            }`}
                         />
                       ))}
                     </div>

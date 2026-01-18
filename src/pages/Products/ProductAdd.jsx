@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { productAPI } from '../../api/product.api';
 import { categoryAPI } from '../../api/category.api';
 import { warehouseAPI } from '../../api/warehouse.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const ProductAdd = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [warehouses, setWarehouses] = useState([]);
+    const toast = useToast();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -106,7 +108,7 @@ const ProductAdd = () => {
 
         // Validate required fields
         if (!formData.name.trim() || !formData.warehouseId) {
-            alert('Please fill in all required fields (Name and Warehouse)');
+            toast.warning('Vui lòng điền đầy đủ các trường bắt buộc (Tên và Kho hàng)');
             return;
         }
 
@@ -148,17 +150,17 @@ const ProductAdd = () => {
             console.log('✅ API Response:', response);
 
             if (response.code === 'success') {
-                alert('Product created successfully!');
+                toast.success('Tạo sản phẩm thành công!');
                 navigate('/inventory/products');
             } else {
                 console.error('❌ Response error:', response);
-                alert(response.message || 'Failed to create product');
+                toast.error(response.message || 'Không thể tạo sản phẩm');
             }
         } catch (error) {
             console.error('💥 Error creating product:', error);
             console.error('Error response:', error.response);
             console.error('Error data:', error.response?.data);
-            alert(error.response?.data?.message || 'Failed to create product');
+            toast.error(error.response?.data?.message || 'Không thể tạo sản phẩm');
         } finally {
             setLoading(false);
         }

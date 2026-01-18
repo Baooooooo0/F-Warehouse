@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../components/Toast/Toast';
 import '../../styles/settings.css';
 
 const Settings = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+  const toast = useToast();
+
   const [activeTab, setActiveTab] = useState('general');
   const [formData, setFormData] = useState({
     firstName: 'Jane',
@@ -30,7 +32,7 @@ const Settings = () => {
 
   const handleSave = () => {
     console.log('Saving profile:', formData);
-    alert('Profile updated successfully!');
+    toast.success('Cập nhật thông tin thành công!');
   };
 
   const tabs = [
@@ -46,18 +48,17 @@ const Settings = () => {
 
         {/* Tabs + Actions */}
         <div className="flex items-center justify-between border-b border-slate-200">
-          
+
           {/* Tabs (LEFT) */}
           <nav aria-label="Tabs" className="-mb-px flex space-x-8">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${
-                  activeTab === tab.id
+                className={`border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${activeTab === tab.id
                     ? 'border-primary text-primary'
                     : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
@@ -90,12 +91,12 @@ const Settings = () => {
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
               {/* Banner */}
               <div className="relative h-32 bg-gradient-to-r from-blue-600 to-indigo-700"></div>
-              
+
               {/* Profile Picture */}
               <div className="relative px-6 pb-6">
                 <div className="-mt-12 mb-4 flex justify-center">
                   <div className="relative">
-                    <div 
+                    <div
                       className="size-24 rounded-full border-4 border-white bg-cover bg-center shadow-md"
                       style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDMt3IZeBcnBoiyvfzFDMjnJsa2f43wJwVaM7gD4s8wyQ5b16dNfV6KhCG7j9SfxIYsJ3xYzl5DyI79jj8Fk_Y3ZenevH-PIl3dHvZwb0ut4EbVawB7OnG1he5-HTJkOVb188G7pMDxzm9Zfzl3UXNcJtz8wkHT_IiaXlUNlBM4EWIQ7J_GmuJsuQF67hWGgtihxEdKPUF2SLDHt9qq60NQTeNnICiYfBdL-OE-kCNhdn6TuheULiHTAT2RGVn50Ar6dcT_hDti1mE-')" }}
                     ></div>
@@ -315,7 +316,7 @@ const Settings = () => {
                       <h3 className="text-lg font-bold text-slate-900">Security</h3>
                       <p className="text-sm text-slate-500">Password and authentication settings.</p>
                     </div>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('security')}
                       className="text-sm font-medium text-primary hover:text-blue-600"
                     >

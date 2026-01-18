@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { productAPI } from '../../api/product.api';
 import { categoryAPI } from '../../api/category.api';
 import { warehouseAPI } from '../../api/warehouse.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const ProductList = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const ProductList = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageQuantity, setPageQuantity] = useState(1);
+  const toast = useToast();
 
   // Filters
   const [selectedWarehouse, setSelectedWarehouse] = useState('');
@@ -109,10 +111,11 @@ const ProductList = () => {
       const response = await productAPI.lock(id, currentStatus);
       if (response.code === 'success') {
         fetchProducts(); // Refresh the list
+        toast.success(currentStatus ? 'Tạm ngưng sản phẩm thành công!' : 'Kích hoạt sản phẩm thành công!');
       }
     } catch (error) {
       console.error('Error locking product:', error);
-      alert('Không thể cập nhật trạng thái sản phẩm');
+      toast.error('Không thể cập nhật trạng thái sản phẩm');
     }
   };
 

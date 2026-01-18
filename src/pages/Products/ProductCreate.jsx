@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../components/Toast/Toast';
 
 const ProductCreate = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: '',
     sku: '',
@@ -29,7 +31,7 @@ const ProductCreate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Creating product:', formData);
-    alert('Tạo sản phẩm thành công!');
+    toast.success('Tạo sản phẩm thành công!');
     navigate('/products');
   };
 

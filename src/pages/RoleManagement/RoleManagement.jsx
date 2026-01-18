@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useToast } from '../../components/Toast/Toast';
 
 // Mock data 
 const mockRoles = [
@@ -144,6 +145,7 @@ const RoleManagement = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const toast = useToast();
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -199,7 +201,7 @@ const RoleManagement = () => {
 
     // Validate form
     if (!formData.name.trim()) {
-      alert('Vui lòng nhập tên vai trò');
+      toast.warning('Vui lòng nhập tên vai trò');
       return;
     }
 
@@ -219,10 +221,10 @@ const RoleManagement = () => {
       setIsModalOpen(false);
       setFormData({ name: '', isActive: true });
 
-      alert('Tạo vai trò thành công!');
+      toast.success('Tạo vai trò thành công!');
     } catch (error) {
       console.error('Error creating role:', error);
-      alert('Tạo vai trò thất bại');
+      toast.error('Tạo vai trò thất bại');
     }
   };
 
