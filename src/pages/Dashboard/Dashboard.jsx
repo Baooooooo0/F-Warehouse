@@ -1,7 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/dashboard.css';
+import { dashboardAPI } from '../../api/dashboard.api';
 
 const Dashboard = () => {
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTotalProducts();
+  }, []);
+
+  const fetchTotalProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await dashboardAPI.getTotal();
+      setTotalProducts(response.data.totalInventoryValue);
+      console.log('Total products fetched:', response);
+    } catch (error) {
+      console.error('Error fetching total products:', error);
+      setTotalProducts('8');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const statsCards = [
     {
       title: 'Tổng giá trị tồn kho',
@@ -28,8 +50,8 @@ const Dashboard = () => {
       iconColor: 'text-orange-500'
     },
     {
-      title: 'Đơn hàng đang chờ',
-      value: '8',
+      title: 'Tổng sản phẩm',
+      value: totalProducts,
       change: '-2%',
       changeType: 'negative',
       icon: 'local_shipping',
@@ -223,28 +245,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Least Selling Products */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-lg font-bold text-slate-900">Sản phẩm bán chậm</h3>
-              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div className="flex flex-col gap-4">
-                  {leastSelling.map((product, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-500">
-                        <span className="material-symbols-outlined">trending_down</span>
-                      </div>
-                      <div className="flex flex-1 flex-col">
-                        <span className="text-sm font-medium text-slate-900">{product.name}</span>
-                        <span className="text-xs text-slate-500">Lần bán cuối: {product.lastSale}</span>
-                      </div>
-                      <button className="rounded p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900">
-                        <span className="material-symbols-outlined text-[20px]">more_vert</span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>

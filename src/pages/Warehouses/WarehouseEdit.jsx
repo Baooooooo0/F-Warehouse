@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { warehouseAPI } from '../../api/warehouse.api';
 
-const WarehouseCreate = () => {
+const WarehouseEdit = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -18,8 +19,41 @@ const WarehouseCreate = () => {
     status: 'active',
     description: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadWarehouse();
+  }, [id]);
+
+  const loadWarehouse = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await warehouseAPI.getById(id);
+      const warehouse = response.data || {};
+      setFormData({
+        name: warehouse.name || '',
+        address: warehouse.address || '',
+        city: warehouse.city || '',
+        state: warehouse.state || '',
+        zipCode: warehouse.zipCode || '',
+        country: warehouse.country || 'United States',
+        phone: warehouse.phone || '',
+        email: warehouse.email || '',
+        manager: warehouse.manager || '',
+        capacity: warehouse.capacity ? warehouse.capacity.toString() : '',
+        status: warehouse.isActive ? 'active' : 'inactive',
+        description: warehouse.description || ''
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to load warehouse');
+      console.error('Error loading warehouse:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +65,7 @@ const WarehouseCreate = () => {
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
     try {
       const payload = {
         ...formData,
@@ -39,15 +73,15 @@ const WarehouseCreate = () => {
         isActive: formData.status === 'active'
       };
       
-      await warehouseAPI.create(payload);
+      await warehouseAPI.update(id, payload);
       navigate('/warehouses');
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to create warehouse';
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to update warehouse';
       setError(errorMessage);
-      console.error('Error creating warehouse:', err);
+      console.error('Error updating warehouse:', err);
       console.error('Response data:', err.response?.data);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -58,6 +92,19 @@ const WarehouseCreate = () => {
       [name]: value
     }));
   };
+
+  if (loading) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin mb-4">
+            <span className="material-symbols-outlined text-[40px] text-primary">hourglass_empty</span>
+          </div>
+          <p className="text-slate-600">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto bg-slate-50">
@@ -72,27 +119,27 @@ const WarehouseCreate = () => {
               <span className="material-symbols-outlined text-slate-600">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Add New Warehouse</h1>
-              <p className="text-sm text-slate-500 mt-0.5">Create a new warehouse location</p>
+              <h1 className="text-2xl font-bold text-slate-900">Edit Warehouse</h1>
+              <p className="text-sm text-slate-500 mt-0.5">Update warehouse information</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/warehouses')}
               className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors"
-              disabled={loading}
+              disabled={submitting}
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={submitting}
               className="flex items-center gap-2 px-5 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="material-symbols-outlined text-[20px]">
-                {loading ? 'hourglass_empty' : 'save'}
+                {submitting ? 'hourglass_empty' : 'save'}
               </span>
-              {loading ? 'Saving...' : 'Save Warehouse'}
+              {submitting ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </div>
@@ -116,7 +163,7 @@ const WarehouseCreate = () => {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
               <div className="p-6 border-b border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-900">Basic Information</h2>
-                <p className="text-sm text-slate-500 mt-1">Enter the warehouse details</p>
+                <p className="text-sm text-slate-500 mt-1">Update warehouse details</p>
               </div>
               <div className="p-6 space-y-4">
                 <div>
@@ -380,7 +427,7 @@ const WarehouseCreate = () => {
                   <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
                     <span className="material-symbols-outlined text-blue-600 text-[20px]">info</span>
                     <p className="text-xs text-blue-700 leading-relaxed">
-                      Make sure all required fields are filled before saving the warehouse.
+                      Make sure all required fields are filled before saving changes.
                     </p>
                   </div>
                 </div>
@@ -393,4 +440,4 @@ const WarehouseCreate = () => {
   );
 };
 
-export default WarehouseCreate;
+export default WarehouseEdit;

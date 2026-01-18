@@ -6,22 +6,24 @@ export const warehouseAPI = {
         return axiosClient.get('/warehouse/list', { params });
     },
 
-    // Create new warehouse (with FormData for image upload)
-    create: (formData) => {
-        return axiosClient.post('/warehouse/create', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+    // Create new warehouse
+    create: (data) => {
+        return axiosClient.post('/warehouse/create', data);
     },
 
-    // Update warehouse (with FormData for image upload)
-    update: (id, formData) => {
-        return axiosClient.put(`/warehouse/update/${id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+    // Get warehouse by ID
+    getById: (id) => {
+        return axiosClient.get(`/warehouse/detail/${id}`);
+    },
+
+    // Update warehouse
+    update: (id, data) => {
+        return axiosClient.put(`/warehouse/update/${id}`, data);
+    },
+
+    // Delete warehouse
+    delete: (id) => {
+        return axiosClient.delete(`/warehouse/delete/${id}`);
     },
 
     // Lock/unlock warehouse
