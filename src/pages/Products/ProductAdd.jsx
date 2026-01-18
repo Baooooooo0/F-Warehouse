@@ -15,6 +15,7 @@ const ProductAdd = () => {
         warehouseId: '',
         quantity: 0,
         price: '',
+        threshold: '',
         categoryId: [], // Array of category IDs
         image: null, // File object
     });
@@ -120,6 +121,9 @@ const ProductAdd = () => {
             submitData.append('warehouseId', formData.warehouseId);
             submitData.append('quantity', formData.quantity);
             submitData.append('price', formData.price || 0);
+            if (formData.threshold !== '') {
+                submitData.append('threshold', formData.threshold);
+            }
 
             // Backend expects categoryId as JSON string array
             if (formData.categoryId.length > 0) {
@@ -416,6 +420,27 @@ const ProductAdd = () => {
                                         <span className="material-symbols-outlined text-[20px]">add</span>
                                     </button>
                                 </div>
+                            </div>
+
+                            {/* Threshold - Low Stock Warning */}
+                            <div>
+                                <label htmlFor="threshold" className="block text-sm font-medium text-slate-700 mb-2">
+                                    Ngưỡng cảnh báo
+                                </label>
+                                <div className="relative">
+                                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">warning</span>
+                                    <input
+                                        type="number"
+                                        id="threshold"
+                                        name="threshold"
+                                        value={formData.threshold}
+                                        onChange={handleInputChange}
+                                        placeholder="Ví dụ: 10"
+                                        min="0"
+                                        className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    />
+                                </div>
+                                <p className="text-xs text-slate-500 mt-1">Khi số lượng tồn thấp hơn ngưỡng này, sản phẩm sẽ được đánh dấu là sắp hết hàng.</p>
                             </div>
                         </div>
                     </div>

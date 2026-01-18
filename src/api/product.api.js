@@ -42,4 +42,9 @@ export const productAPI = {
   lock: (id, isActive) => {
     return axiosClient.put(`/product/lock/${id}`, { isActive });
   },
+
+  // Order more items for a product
+  orderItem: (id, quantity) => {
+    return axiosClient.post(`/product/order_item/${id}`, { quantity });
+  },
 };

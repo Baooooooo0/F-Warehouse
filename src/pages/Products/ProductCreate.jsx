@@ -40,7 +40,7 @@ const ProductCreate = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 onClick={() => navigate('/products')}
                 className="text-slate-500 hover:text-primary transition-colors rounded-full p-1 hover:bg-gray-100"
               >
@@ -52,13 +52,13 @@ const ProductCreate = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => navigate('/products')}
                 className="px-4 h-10 rounded-lg border border-gray-300 text-sm font-bold hover:bg-gray-100 transition-colors text-slate-600"
               >
                 Hủy
               </button>
-              <button 
+              <button
                 onClick={handleSubmit}
                 className="px-6 h-10 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-900/20 transition-all flex items-center gap-2"
               >
@@ -89,12 +89,12 @@ const ProductCreate = () => {
               <div className="space-y-6">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-slate-700">Tên sản phẩm <span className="text-red-500">*</span></label>
-                  <input 
+                  <input
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-gray-400 text-slate-900" 
-                    placeholder="Ví dụ: Tai nghe chống ồn" 
+                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-gray-400 text-slate-900"
+                    placeholder="Ví dụ: Tai nghe chống ồn"
                     type="text"
                     required
                   />
@@ -105,12 +105,12 @@ const ProductCreate = () => {
                     <label className="text-sm font-medium text-slate-700">SKU</label>
                     <div className="relative group">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px] group-focus-within:text-primary transition-colors">qr_code_2</span>
-                      <input 
+                      <input
                         name="sku"
                         value={formData.sku}
                         onChange={handleChange}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-10 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900" 
-                        placeholder="Ví dụ: WH-1000XM5" 
+                        className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-10 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900"
+                        placeholder="Ví dụ: WH-1000XM5"
                         type="text"
                       />
                     </div>
@@ -120,12 +120,12 @@ const ProductCreate = () => {
                     <label className="text-sm font-medium text-slate-700">Mã vạch (ISBN/UPC)</label>
                     <div className="relative group">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px] group-focus-within:text-primary transition-colors">barcode_reader</span>
-                      <input 
+                      <input
                         name="barcode"
                         value={formData.barcode}
                         onChange={handleChange}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-10 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900" 
-                        placeholder="Quét hoặc nhập mã vạch" 
+                        className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-10 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900"
+                        placeholder="Quét hoặc nhập mã vạch"
                         type="text"
                       />
                     </div>
@@ -153,11 +153,11 @@ const ProductCreate = () => {
                         <span className="material-symbols-outlined text-[18px]">link</span>
                       </button>
                     </div>
-                    <textarea 
+                    <textarea
                       name="description"
                       value={formData.description}
                       onChange={handleChange}
-                      className="w-full bg-transparent border-none p-4 min-h-[140px] text-base focus:ring-0 resize-y text-slate-900 placeholder:text-gray-400" 
+                      className="w-full bg-transparent border-none p-4 min-h-[140px] text-base focus:ring-0 resize-y text-slate-900 placeholder:text-gray-400"
                       placeholder="Mô tả tính năng, thông số và điểm bán chính của sản phẩm..."
                     ></textarea>
                   </div>
@@ -198,12 +198,12 @@ const ProductCreate = () => {
                   <label className="text-sm font-medium text-slate-700">Giá niêm yết</label>
                   <div className="relative group">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold group-focus-within:text-primary transition-colors">$</span>
-                    <input 
+                    <input
                       name="basePrice"
                       value={formData.basePrice}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-8 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900" 
-                      placeholder="0.00" 
+                      className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-8 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900"
+                      placeholder="0.00"
                       type="number"
                       step="0.01"
                     />
@@ -213,12 +213,12 @@ const ProductCreate = () => {
                   <label className="text-sm font-medium text-slate-700">Giá vốn (COGS)</label>
                   <div className="relative group">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold group-focus-within:text-primary transition-colors">$</span>
-                    <input 
+                    <input
                       name="costPrice"
                       value={formData.costPrice}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-8 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900" 
-                      placeholder="0.00" 
+                      className="w-full bg-gray-50 border border-gray-300 rounded-lg pl-8 pr-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900"
+                      placeholder="0.00"
                       type="number"
                       step="0.01"
                     />
@@ -228,12 +228,12 @@ const ProductCreate = () => {
                   <label className="text-sm font-medium text-slate-700">Giảm giá (%)</label>
                   <div className="relative group">
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold group-focus-within:text-primary transition-colors">%</span>
-                    <input 
+                    <input
                       name="discount"
                       value={formData.discount}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900" 
-                      placeholder="0" 
+                      className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-base focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-slate-900"
+                      placeholder="0"
                       type="number"
                     />
                   </div>
@@ -254,8 +254,8 @@ const ProductCreate = () => {
                     <span className="text-xs text-slate-500">Bật/tắt hiển thị sản phẩm</span>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={formData.status === 'active'}
                       onChange={handleChange}
                       name="status"
@@ -269,7 +269,7 @@ const ProductCreate = () => {
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-slate-700">Danh mục</label>
                   <div className="relative">
-                    <select 
+                    <select
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
@@ -289,7 +289,7 @@ const ProductCreate = () => {
                   <label className="text-sm font-medium text-slate-700">Kho lưu trữ</label>
                   <div className="relative group">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px] group-focus-within:text-primary transition-colors">warehouse</span>
-                    <select 
+                    <select
                       name="warehouse"
                       value={formData.warehouse}
                       onChange={handleChange}
@@ -307,23 +307,23 @@ const ProductCreate = () => {
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-slate-700">Số lượng tồn</label>
                   <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50 p-1">
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setFormData({...formData, quantity: Math.max(0, formData.quantity - 1)})}
+                      onClick={() => setFormData({ ...formData, quantity: Math.max(0, formData.quantity - 1) })}
                       className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-200 text-slate-500 transition-colors"
                     >
                       <span className="material-symbols-outlined">remove</span>
                     </button>
-                    <input 
+                    <input
                       name="quantity"
                       value={formData.quantity}
                       onChange={handleChange}
-                      className="flex-1 text-center bg-transparent border-none text-base font-bold focus:ring-0 text-slate-900 p-0" 
-                      type="number" 
+                      className="flex-1 text-center bg-transparent border-none text-base font-bold focus:ring-0 text-slate-900 p-0"
+                      type="number"
                     />
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setFormData({...formData, quantity: formData.quantity + 1})}
+                      onClick={() => setFormData({ ...formData, quantity: formData.quantity + 1 })}
                       className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-200 text-slate-500 transition-colors"
                     >
                       <span className="material-symbols-outlined">add</span>
@@ -331,7 +331,7 @@ const ProductCreate = () => {
                   </div>
                 </div>
 
-                <hr className="border-gray-200"/>
+                <hr className="border-gray-200" />
 
                 {/* Supplier */}
                 <div>
@@ -341,7 +341,7 @@ const ProductCreate = () => {
                       TC
                     </div>
                     <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-slate-900 truncate">TechCorp Inc.</p>
+                      <p className="text-sm font-bold text-slate-900 truncate">TechCorp Inc.</p>
                       <p className="text-xs text-slate-500 truncate">ID: SUP-009</p>
                     </div>
                     <button type="button" className="text-slate-400 hover:text-slate-600 p-1 hover:bg-gray-200 rounded">

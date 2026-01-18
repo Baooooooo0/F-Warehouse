@@ -17,6 +17,12 @@ const LowStockProducts = () => {
     const [categories, setCategories] = useState([]);
     const [warehouses, setWarehouses] = useState([]);
 
+    // State cho modal nhập hàng
+    const [showOrderModal, setShowOrderModal] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [orderQuantity, setOrderQuantity] = useState('');
+    const [orderLoading, setOrderLoading] = useState(false);
+
     const THRESHOLD = 100; // Ngưỡng mặc định cho hàng tồn kho thấp
 
     useEffect(() => {
@@ -96,6 +102,43 @@ const LowStockProducts = () => {
         }
     };
 
+    const handleOpenOrderModal = (product) => {
+        setSelectedProduct(product);
+        setOrderQuantity('');
+        setShowOrderModal(true);
+    };
+
+    const handleCloseOrderModal = () => {
+        setShowOrderModal(false);
+        setSelectedProduct(null);
+        setOrderQuantity('');
+    };
+
+    const handleOrderSubmit = async () => {
+        if (!orderQuantity || Number(orderQuantity) <= 0) {
+            alert('Vui lòng nhập số lượng hợp lệ');
+            return;
+        }
+
+        try {
+            setOrderLoading(true);
+            const response = await productAPI.orderItem(selectedProduct.id, Number(orderQuantity));
+
+            if (response.code === 'success') {
+                alert(response.message || 'Nhập hàng thành công!');
+                handleCloseOrderModal();
+                fetchLowStockProducts(); // Refresh danh sách
+            } else {
+                alert(response.message || 'Có lỗi xảy ra');
+            }
+        } catch (error) {
+            console.error('Lỗi khi nhập hàng:', error);
+            alert(error.response?.data?.message || 'Có lỗi xảy ra khi nhập hàng');
+        } finally {
+            setOrderLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col gap-6">
             {/* Breadcrumb */}
@@ -115,17 +158,7 @@ const LowStockProducts = () => {
                 </p>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">download</span>
-                    Xuất danh sách
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                    <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
-                    Tạo đơn hàng
-                </button>
-            </div>
+
 
             {/* Search and Filters */}
             <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
@@ -276,10 +309,10 @@ const LowStockProducts = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
-                                                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Xem chi tiết">
-                                                        <span className="material-symbols-outlined text-[20px]">visibility</span>
-                                                    </button>
-                                                    <button className="px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
+                                                    <button
+                                                        onClick={() => handleOpenOrderModal(product)}
+                                                        className="px-3 py-1.5 text-xs font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors"
+                                                    >
                                                         Đặt thêm
                                                     </button>
                                                 </div>
@@ -313,6 +346,60 @@ const LowStockProducts = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal nhập hàng */}
+            {showOrderModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-bold text-slate-900">Nhập thêm hàng</h3>
+                            <button
+                                onClick={handleCloseOrderModal}
+                                className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
+                            >
+                                <span className="material-symbols-outlined text-slate-500">close</span>
+                            </button>
+                        </div>
+
+                        <div className="mb-4">
+                            <p className="text-sm text-slate-600 mb-2">Sản phẩm:</p>
+                            <p className="font-semibold text-slate-900">{selectedProduct?.name}</p>
+                            <p className="text-sm text-slate-500">Số lượng hiện tại: {selectedProduct?.quantity}</p>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-slate-700 mb-2">
+                                Số lượng nhập thêm <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                value={orderQuantity}
+                                onChange={(e) => setOrderQuantity(e.target.value)}
+                                placeholder="Nhập số lượng..."
+                                min="1"
+                                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={handleCloseOrderModal}
+                                className="flex-1 px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                                disabled={orderLoading}
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                onClick={handleOrderSubmit}
+                                className="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                disabled={orderLoading}
+                            >
+                                {orderLoading ? 'Đang xử lý...' : 'Xác nhận'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
