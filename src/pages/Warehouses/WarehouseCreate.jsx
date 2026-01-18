@@ -1,28 +1,59 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { warehouseAPI } from '../../api/warehouse.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const WarehouseCreate = () => {
   const navigate = useNavigate();
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'United States',
-    phone: '',
-    email: '',
-    manager: '',
-    capacity: '',
-    status: 'active',
-    description: ''
+    image: null,
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Warehouse data:', formData);
-    // TODO: Add API call to create warehouse
-    navigate('/warehouses');
+
+    // Validate required fields
+    if (!formData.name.trim()) {
+      toast.warning('Vui lòng nhập tên kho hàng');
+      return;
+    }
+
+    if (!formData.address.trim()) {
+      toast.warning('Vui lòng nhập địa chỉ kho hàng');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Create FormData for file upload
+      const submitData = new FormData();
+      submitData.append('name', formData.name);
+      submitData.append('address', formData.address);
+
+      // Append image if selected
+      if (formData.image) {
+        submitData.append('image', formData.image);
+      }
+
+      const response = await warehouseAPI.create(submitData);
+
+      if (response.code === 'success') {
+        toast.success('Tạo kho hàng thành công!');
+        navigate('/warehouses');
+      } else {
+        toast.error(response.message || 'Không thể tạo kho hàng');
+      }
+    } catch (error) {
+      console.error('Error creating warehouse:', error);
+      toast.error(error.response?.data?.message || 'Không thể tạo kho hàng');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -33,10 +64,29 @@ const WarehouseCreate = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        image: file
+      }));
+    }
+  };
+
   return (
     <div className="flex-1 overflow-y-auto bg-slate-50">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-slate-500 px-8 pt-6">
+        <Link to="/dashboard" className="hover:text-slate-900">Trang chủ</Link>
+        <span>/</span>
+        <Link to="/warehouses" className="hover:text-slate-900">Kho hàng</Link>
+        <span>/</span>
+        <span className="text-slate-900 font-medium">Thêm mới</span>
+      </nav>
+
       {/* Sticky Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-8 py-4">
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-8 py-4 mt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
@@ -46,8 +96,8 @@ const WarehouseCreate = () => {
               <span className="material-symbols-outlined text-slate-600">arrow_back</span>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Add New Warehouse</h1>
-              <p className="text-sm text-slate-500 mt-0.5">Create a new warehouse location</p>
+              <h1 className="text-2xl font-bold text-slate-900">Thêm kho hàng mới</h1>
+              <p className="text-sm text-slate-500 mt-0.5">Tạo kho hàng mới trong hệ thống</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -55,41 +105,51 @@ const WarehouseCreate = () => {
               onClick={() => navigate('/warehouses')}
               className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium transition-colors"
             >
-              Cancel
+              Hủy
             </button>
             <button
               onClick={handleSubmit}
-              className="flex items-center gap-2 px-5 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-primary/20"
+              disabled={loading}
+              className="flex items-center gap-2 px-5 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="material-symbols-outlined text-[20px]">save</span>
-              Save Warehouse
+              {loading ? (
+                <>
+                  <span className="material-symbols-outlined text-[20px] animate-spin">refresh</span>
+                  Đang lưu...
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-[20px]">save</span>
+                  Lưu kho hàng
+                </>
+              )}
             </button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-8">
+      <div className="max-w-4xl mx-auto p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Main Form */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
               <div className="p-6 border-b border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900">Basic Information</h2>
-                <p className="text-sm text-slate-500 mt-1">Enter the warehouse details</p>
+                <h2 className="text-lg font-semibold text-slate-900">Thông tin cơ bản</h2>
+                <p className="text-sm text-slate-500 mt-1">Nhập thông tin kho hàng</p>
               </div>
               <div className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Warehouse Name <span className="text-red-500">*</span>
+                    Tên kho hàng <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="e.g., North Star Distribution Center"
+                    placeholder="VD: Kho Hà Nội, Kho Hồ Chí Minh..."
                     className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow"
                     required
                   />
@@ -97,243 +157,92 @@ const WarehouseCreate = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Description
+                    Địa chỉ <span className="text-red-500">*</span>
                   </label>
                   <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    placeholder="Brief description of the warehouse"
-                    rows="4"
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Manager Name
-                    </label>
-                    <input
-                      type="text"
-                      name="manager"
-                      value={formData.manager}
-                      onChange={handleChange}
-                      placeholder="e.g., John Smith"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Capacity (units)
-                    </label>
-                    <input
-                      type="number"
-                      name="capacity"
-                      value={formData.capacity}
-                      onChange={handleChange}
-                      placeholder="e.g., 50000"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Location Details */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-              <div className="p-6 border-b border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900">Location Details</h2>
-                <p className="text-sm text-slate-500 mt-1">Physical address information</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Street Address <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    placeholder="e.g., 123 Logistics Way"
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="VD: 123 Đường ABC, Quận 1, TP. Hồ Chí Minh"
+                    rows="3"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                     required
                   />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      City <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      placeholder="e.g., Seattle"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      State/Province <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleChange}
-                      placeholder="e.g., WA"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      ZIP/Postal Code <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="zipCode"
-                      value={formData.zipCode}
-                      onChange={handleChange}
-                      placeholder="e.g., 98101"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Country <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      name="country"
-                      value={formData.country}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                      <option value="United States">United States</option>
-                      <option value="Canada">Canada</option>
-                      <option value="Mexico">Mexico</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Contact Information */}
+            {/* Image Upload */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
               <div className="p-6 border-b border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900">Contact Information</h2>
-                <p className="text-sm text-slate-500 mt-1">Communication details</p>
+                <h2 className="text-lg font-semibold text-slate-900">Hình ảnh kho</h2>
+                <p className="text-sm text-slate-500 mt-1">Tải lên hình ảnh kho hàng (tùy chọn)</p>
               </div>
-              <div className="p-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="e.g., (555) 123-4567"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              <div className="p-6">
+                {/* Image Preview */}
+                {formData.image && (
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-slate-700 mb-2">Xem trước:</p>
+                    <img
+                      src={URL.createObjectURL(formData.image)}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover rounded-lg border border-slate-200"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="e.g., warehouse@company.com"
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    />
-                  </div>
+                )}
+
+                <div className="border-2 border-dashed border-slate-200 rounded-lg p-8 text-center hover:border-primary transition-colors">
+                  <input
+                    type="file"
+                    id="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="image" className="cursor-pointer">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-primary text-[24px]">cloud_upload</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">
+                          {formData.image ? 'Thay đổi hình ảnh' : 'Nhấn để tải lên hình ảnh'}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">PNG, JPG hoặc GIF (tối đa 10MB)</p>
+                      </div>
+                    </div>
+                  </label>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column - Status & Summary */}
+          {/* Right Column - Summary */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Status Card */}
+            {/* Preview Card */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm sticky top-24">
               <div className="p-6 border-b border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900">Status</h2>
+                <h2 className="text-lg font-semibold text-slate-900">Xem trước</h2>
               </div>
               <div className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-3">
-                    Warehouse Status
-                  </label>
-                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${formData.status === 'active' ? 'bg-green-500' : 'bg-slate-400'}`}></div>
-                      <span className="text-sm font-medium text-slate-900">
-                        {formData.status === 'active' ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({
-                        ...prev,
-                        status: prev.status === 'active' ? 'inactive' : 'active'
-                      }))}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        formData.status === 'active' ? 'bg-primary' : 'bg-slate-300'
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          formData.status === 'active' ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                      />
-                    </button>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Tên kho:</span>
+                    <span className="font-medium text-slate-900 text-right max-w-[60%] truncate">
+                      {formData.name || 'Chưa nhập'}
+                    </span>
                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-200">
-                  <h3 className="text-sm font-medium text-slate-700 mb-3">Quick Preview</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Name:</span>
-                      <span className="font-medium text-slate-900 text-right max-w-[60%] truncate">
-                        {formData.name || 'Not set'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Location:</span>
-                      <span className="font-medium text-slate-900 text-right max-w-[60%] truncate">
-                        {formData.city && formData.state ? `${formData.city}, ${formData.state}` : 'Not set'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Manager:</span>
-                      <span className="font-medium text-slate-900 text-right max-w-[60%] truncate">
-                        {formData.manager || 'Not assigned'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Capacity:</span>
-                      <span className="font-medium text-slate-900">
-                        {formData.capacity ? `${Number(formData.capacity).toLocaleString()} units` : 'Not set'}
-                      </span>
-                    </div>
+                  <div className="flex items-start justify-between text-sm">
+                    <span className="text-slate-500">Địa chỉ:</span>
+                    <span className="font-medium text-slate-900 text-right max-w-[60%]">
+                      {formData.address || 'Chưa nhập'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Hình ảnh:</span>
+                    <span className="font-medium text-slate-900">
+                      {formData.image ? 'Đã chọn' : 'Chưa có'}
+                    </span>
                   </div>
                 </div>
 
@@ -341,7 +250,7 @@ const WarehouseCreate = () => {
                   <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
                     <span className="material-symbols-outlined text-blue-600 text-[20px]">info</span>
                     <p className="text-xs text-blue-700 leading-relaxed">
-                      Make sure all required fields are filled before saving the warehouse.
+                      Đảm bảo điền đầy đủ các trường bắt buộc (*) trước khi lưu.
                     </p>
                   </div>
                 </div>
