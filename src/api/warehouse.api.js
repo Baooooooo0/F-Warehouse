@@ -31,3 +31,11 @@ export const warehouseAPI = {
         return axiosClient.put(`/warehouse/lock/${id}`, { isActive });
     },
 };
+
+// Product list API
+export const productListAPI = {
+    // Get product list with filters
+    getList: (params) => {
+        return axiosClient.get('/product/list', { params });
+    },
+};

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../../styles/dashboard.css';
 import { dashboardAPI } from '../../api/dashboard.api';
 import { productAPI } from '../../api/product.api';
+import { productListAPI } from '../../api/warehouse.api';
 import { useToast } from '../../components/Toast/Toast';
 
 const Dashboard = () => {
@@ -13,6 +14,7 @@ const Dashboard = () => {
   const [lowStockItems, setLowStockItems] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [bestSelling, setBestSelling] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editQuantity, setEditQuantity] = useState(0);
@@ -22,6 +24,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchTotalProducts();
     fetchLowStockProducts();
+    fetchBestSellingProducts();
   }, []);
 
   const fetchTotalProducts = async () => {
@@ -45,6 +48,31 @@ const Dashboard = () => {
       setLowStockItems(response.data || []);
     } catch (error) {
       setLowStockItems([]);
+    }
+  };
+
+  const fetchBestSellingProducts = async () => {
+    try {
+      const params = {
+        search: '',
+        quantity: 'desc',
+        isActive: '',
+        warehouseId: '',
+        categoryId: '',
+        page: 1
+      };
+      const response = await productListAPI.getList(params);
+      const products = response.data || [];
+      // Display top 5 products
+      setBestSelling(products.slice(0, 5).map(product => ({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        units: `${product.quantity} đơn vị`,
+        revenue: `₫${(product.price * product.quantity).toLocaleString('vi-VN')}`
+      })));
+    } catch (error) {
+      setBestSelling([]);
     }
   };
 
@@ -121,10 +149,6 @@ const Dashboard = () => {
       iconColor: 'text-blue-400'
     }
   ];
-
-  const bestSelling = [];
-
-  const leastSelling = [];
 
   return (
     <div className="flex-1 overflow-y-auto">

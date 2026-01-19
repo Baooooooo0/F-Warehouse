@@ -1,26 +1,80 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import React, { useState, useEffect } from 'react';
+// import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../components/Toast/Toast';
+import { authAPI } from '../../api/auth.api';
 import '../../styles/settings.css';
-
 const Settings = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const toast = useToast();
+  // const { user } = useAuth();
+  // const navigate = useNavigate();
+  // const toast = useToast();
 
   const [activeTab, setActiveTab] = useState('general');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: 'Jane',
-    lastName: 'Doe',
-    email: 'jane.doe@stockmaster.com',
-    phone: '+1 (555) 123-4567',
-    role: 'Warehouse Manager',
-    bio: 'Responsible for overseeing daily warehouse operations, inventory accuracy, and team safety.',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    role: '',
+    bio: '',
     language: 'English (US)',
     timezone: 'Pacific Time (US & Canada)',
     twoFactorEnabled: true
   });
+
+  // useEffect(() => {
+  //   fetchProfile();
+  // }, []);
+  useEffect(() => {
+    checkAuth();
+  }, []);
+  const checkAuth = async () => {
+      try {
+          const response = await authAPI.getProfile();
+          if (response.code === 'success') {
+            console.log(response.data);
+            setFormData({
+              firstName: response.data.userName || '',
+              lastName: response.data.lastName || '',
+              email: response.data.email || '',
+              phone: response.data.phone || '',
+              role: response.data.role || '',
+              bio: response.data.bio || '',
+          });        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        localStorage.removeItem('token');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const response = await useAuth.getProfile();
+      if (response.data) {
+        const profileData = response.data;
+        setFormData({
+          firstName: profileData.firstName || '',
+          lastName: profileData.lastName || '',
+          email: profileData.email || '',
+          phone: profileData.phone || '',
+          role: profileData.role || '',
+          bio: profileData.bio || '',
+          language: profileData.language || 'English (US)',
+          timezone: profileData.timezone || 'Pacific Time (US & Canada)',
+          twoFactorEnabled: profileData.twoFactorEnabled || true
+        });
+      }
+    } catch (error) {
+      toast.error('Không thể tải thông tin hồ sơ');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,8 +84,31 @@ const Settings = () => {
     });
   };
 
-  const handleSave = () => {
-    toast.success('Cập nhật thông tin thành công!');
+  const handleSave = async () => {
+    try {
+      setSubmitting(true);
+      const updateData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        bio: formData.bio,
+        language: formData.language,
+        timezone: formData.timezone,
+        twoFactorEnabled: formData.twoFactorEnabled
+      };
+      
+      const response = await accountAPI.updateProfile(updateData);
+      if (response.code === 'success') {
+        toast.success('Cập nhật thông tin thành công!');
+      } else {
+        toast.error(response.message || 'Cập nhật thất bại');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Lỗi khi cập nhật thông tin');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const tabs = [
@@ -75,10 +152,20 @@ const Settings = () => {
 
             <button
               onClick={handleSave}
-              className="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              disabled={submitting || loading}
+              className="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[18px]">save</span>
-              Save Changes
+              {submitting ? (
+                <>
+                  <span className="material-symbols-outlined text-[18px] animate-spin">refresh</span>
+                  Đang lưu...
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-[18px]">save</span>
+                  Lưu thay đổi
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -107,15 +194,15 @@ const Settings = () => {
 
                 {/* User Info */}
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-slate-900">Jane Doe</h3>
-                  <p className="text-sm font-medium text-primary">Warehouse Manager</p>
+                  <h3 className="text-xl font-bold text-slate-900">{formData.firstName} {formData.lastName}</h3>
+                  <p className="text-sm font-medium text-primary">{formData.role || 'User'}</p>
                   <div className="mt-2 flex items-center justify-center gap-2">
                     <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
                       <span className="mr-1.5 size-1.5 rounded-full bg-green-600"></span>
                       Active
                     </span>
                     <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-800">
-                      Admin
+                      {formData.role || 'Admin'}
                     </span>
                   </div>
                 </div>
@@ -125,19 +212,19 @@ const Settings = () => {
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-3 text-sm text-slate-600">
                       <span className="material-symbols-outlined text-[20px]">mail</span>
-                      jane.doe@stockmaster.com
+                      {formData.email || 'N/A'}
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-600">
                       <span className="material-symbols-outlined text-[20px]">phone</span>
-                      +1 (555) 123-4567
+                      {formData.phone || 'N/A'}
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-600">
-                      <span className="material-symbols-outlined text-[20px]">location_on</span>
-                      San Francisco, CA
+                      <span className="material-symbols-outlined text-[20px]">language</span>
+                      {formData.language || 'N/A'}
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-600">
                       <span className="material-symbols-outlined text-[20px]">schedule</span>
-                      PDT (UTC-07:00)
+                      {formData.timezone || 'N/A'}
                     </div>
                   </div>
                 </div>
@@ -158,21 +245,30 @@ const Settings = () => {
 
           {/* Right Column - Form Sections */}
           <div className="flex flex-col gap-6 lg:col-span-2">
+            {loading ? (
+              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm flex items-center justify-center h-64">
+                <div className="flex flex-col items-center gap-3">
+                  <span className="material-symbols-outlined text-4xl animate-spin text-primary">refresh</span>
+                  <p className="text-sm text-slate-500">Đang tải thông tin...</p>
+                </div>
+              </div>
+            ) : (
+            <>
             {/* Personal Information */}
             {activeTab === 'general' && (
               <>
                 <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="mb-6 flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-bold text-slate-900">Personal Information</h3>
-                      <p className="text-sm text-slate-500">Update your personal details and public profile.</p>
+                      <h3 className="text-lg font-bold text-slate-900">Thông tin cá nhân</h3>
+                      <p className="text-sm text-slate-500">Cập nhật chi tiết cá nhân và hồ sơ công khai của bạn.</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="col-span-1">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="firstName">
-                        First Name
+                        Tên
                       </label>
                       <input
                         type="text"
@@ -184,23 +280,11 @@ const Settings = () => {
                       />
                     </div>
 
-                    <div className="col-span-1">
-                      <label className="block text-sm font-medium text-slate-700" htmlFor="lastName">
-                        Last Name
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                      />
-                    </div>
+                    
 
                     <div className="col-span-1 md:col-span-2">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="email">
-                        Email Address
+                        Email
                       </label>
                       <div className="relative mt-1 rounded-md shadow-sm">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -219,7 +303,7 @@ const Settings = () => {
 
                     <div className="col-span-1">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="phone">
-                        Phone Number
+                        Số điện thoại
                       </label>
                       <input
                         type="tel"
@@ -233,7 +317,7 @@ const Settings = () => {
 
                     <div className="col-span-1">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="role">
-                        Role
+                        Chức vụ
                       </label>
                       <input
                         type="text"
@@ -243,12 +327,12 @@ const Settings = () => {
                         disabled
                         className="mt-1 block w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
                       />
-                      <p className="mt-1 text-xs text-slate-500">Contact admin to change role.</p>
+                      <p className="mt-1 text-xs text-slate-500">Liên hệ admin để thay đổi chức vụ.</p>
                     </div>
 
                     <div className="col-span-1 md:col-span-2">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="bio">
-                        Bio
+                        Tiểu sử
                       </label>
                       <textarea
                         id="bio"
@@ -265,14 +349,14 @@ const Settings = () => {
                 {/* Preferences */}
                 <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="mb-6">
-                    <h3 className="text-lg font-bold text-slate-900">Preferences</h3>
-                    <p className="text-sm text-slate-500">Manage your regional settings.</p>
+                    <h3 className="text-lg font-bold text-slate-900">Tùy chọn</h3>
+                    <p className="text-sm text-slate-500">Quản lý cài đặt khu vực của bạn.</p>
                   </div>
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="col-span-1">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="language">
-                        Language
+                        Ngôn ngữ
                       </label>
                       <select
                         id="language"
@@ -282,15 +366,15 @@ const Settings = () => {
                         className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                       >
                         <option>English (US)</option>
+                        <option>Tiếng Việt</option>
                         <option>Spanish</option>
                         <option>French</option>
-                        <option>Vietnamese</option>
                       </select>
                     </div>
 
                     <div className="col-span-1">
                       <label className="block text-sm font-medium text-slate-700" htmlFor="timezone">
-                        Timezone
+                        Múi giờ
                       </label>
                       <select
                         id="timezone"
@@ -312,14 +396,14 @@ const Settings = () => {
                 <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-lg font-bold text-slate-900">Security</h3>
-                      <p className="text-sm text-slate-500">Password and authentication settings.</p>
+                      <h3 className="text-lg font-bold text-slate-900">Bảo mật</h3>
+                      <p className="text-sm text-slate-500">Cài đặt mật khẩu và xác thực.</p>
                     </div>
                     <button
                       onClick={() => setActiveTab('security')}
                       className="text-sm font-medium text-primary hover:text-blue-600"
                     >
-                      Manage Security
+                      Quản lý bảo mật
                     </button>
                   </div>
 
@@ -330,12 +414,12 @@ const Settings = () => {
                           <span className="material-symbols-outlined text-slate-600">key</span>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-slate-900">Password</p>
-                          <p className="text-xs text-slate-500">Last changed 3 months ago</p>
+                          <p className="text-sm font-medium text-slate-900">Mật khẩu</p>
+                          <p className="text-xs text-slate-500">Thay đổi lần cuối 3 tháng trước</p>
                         </div>
                       </div>
-                      <button className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors">
-                        Change
+                      <button onClick={() => setActiveTab('security')} className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                        Thay đổi
                       </button>
                     </div>
 
@@ -345,8 +429,8 @@ const Settings = () => {
                           <span className="material-symbols-outlined text-slate-600">smartphone</span>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-slate-900">2-Step Verification</p>
-                          <p className="text-xs text-green-600">Enabled</p>
+                          <p className="text-sm font-medium text-slate-900">Xác minh 2 bước</p>
+                          <p className="text-xs text-green-600">Đã bật</p>
                         </div>
                       </div>
                       <label className="relative inline-flex cursor-pointer items-center">
@@ -369,11 +453,11 @@ const Settings = () => {
             {activeTab === 'security' && (
               <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="mb-6">
-                  <h3 className="text-lg font-bold text-slate-900">Security Settings</h3>
-                  <p className="text-sm text-slate-500">Manage your account security and authentication.</p>
+                  <h3 className="text-lg font-bold text-slate-900">Cài đặt bảo mật</h3>
+                  <p className="text-sm text-slate-500">Quản lý bảo mật tài khoản và xác thực.</p>
                 </div>
                 <div className="space-y-4">
-                  <p className="text-sm text-slate-600">Security settings coming soon...</p>
+                  <p className="text-sm text-slate-600">Cài đặt bảo mật sẽ sớm có...</p>
                 </div>
               </div>
             )}
@@ -382,11 +466,11 @@ const Settings = () => {
             {activeTab === 'notifications' && (
               <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="mb-6">
-                  <h3 className="text-lg font-bold text-slate-900">Notification Preferences</h3>
-                  <p className="text-sm text-slate-500">Choose how you want to be notified.</p>
+                  <h3 className="text-lg font-bold text-slate-900">Tùy chọn thông báo</h3>
+                  <p className="text-sm text-slate-500">Chọn cách bạn muốn được thông báo.</p>
                 </div>
                 <div className="space-y-4">
-                  <p className="text-sm text-slate-600">Notification settings coming soon...</p>
+                  <p className="text-sm text-slate-600">Cài đặt thông báo sẽ sớm có...</p>
                 </div>
               </div>
             )}
@@ -395,13 +479,15 @@ const Settings = () => {
             {activeTab === 'billing' && (
               <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="mb-6">
-                  <h3 className="text-lg font-bold text-slate-900">Billing Information</h3>
-                  <p className="text-sm text-slate-500">Manage your subscription and payment methods.</p>
+                  <h3 className="text-lg font-bold text-slate-900">Thông tin thanh toán</h3>
+                  <p className="text-sm text-slate-500">Quản lý đăng ký và phương thức thanh toán của bạn.</p>
                 </div>
                 <div className="space-y-4">
-                  <p className="text-sm text-slate-600">Billing information coming soon...</p>
+                  <p className="text-sm text-slate-600">Thông tin thanh toán sẽ sớm có...</p>
                 </div>
               </div>
+            )}
+            </>
             )}
           </div>
         </div>
