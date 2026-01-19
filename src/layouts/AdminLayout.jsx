@@ -26,7 +26,6 @@ const AdminLayout = () => {
         { path: '/inventory/categories', label: 'Quản lý danh mục', icon: 'category' },
       ]
     },
-    { path: '/role-management', label: 'Quản lý vai trò', icon: 'admin_panel_settings' },
     { path: '/users', label: 'Người dùng', icon: 'group' },
     { path: '/settings', label: 'Cài đặt', icon: 'settings' },
   ];
