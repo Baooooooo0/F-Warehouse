@@ -17,6 +17,7 @@ const ProductAdd = () => {
         price: '',
         categoryId: [], // Array of category IDs
         image: null, // File object
+        threshold: 0,
     });
 
     useEffect(() => {
@@ -73,6 +74,12 @@ const ProductAdd = () => {
             quantity: Math.max(0, prev.quantity + delta)
         }));
     };
+    const handleThresholdChange = (delta) => {
+        setFormData(prev => ({
+            ...prev,
+            threshold: Math.max(0, prev.threshold + delta)
+        }));
+    };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -127,6 +134,9 @@ const ProductAdd = () => {
                 submitData.append('categoryId', categoryIdJson);
                 console.log('📦 CategoryId JSON:', categoryIdJson);
             }
+
+            // Append threshold
+            submitData.append('threshold', formData.threshold);
 
             // Append image if selected
             if (formData.image) {
@@ -411,6 +421,36 @@ const ProductAdd = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleQuantityChange(1)}
+                                        className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined text-[20px]">add</span>
+                                    </button>
+                                </div>
+                            </div>
+                            {/* Threshold Alert */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                    Ngưỡng cảnh báo
+                                </label>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleThresholdChange(-1)}
+                                        className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined text-[20px]">remove</span>
+                                    </button>
+                                    <input
+                                        type="number"
+                                        name="threshold"
+                                        value={formData.threshold}
+                                        onChange={handleInputChange}
+                                        className="flex-1 text-center px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        min="0"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleThresholdChange(1)}
                                         className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                                     >
                                         <span className="material-symbols-outlined text-[20px]">add</span>

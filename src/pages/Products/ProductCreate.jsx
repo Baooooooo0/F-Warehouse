@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { productAPI } from '../../api/product.api';
 
 const ProductCreate = () => {
   const navigate = useNavigate();
@@ -14,9 +15,12 @@ const ProductCreate = () => {
     category: '',
     warehouse: 'Main Warehouse (NY)',
     quantity: 150,
+    threshold: 50,
     status: 'active',
     supplier: 'TechCorp Inc.'
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -26,11 +30,31 @@ const ProductCreate = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Creating product:', formData);
-    alert('Tạo sản phẩm thành công!');
-    navigate('/products');
+    
+    if (!formData.name || !formData.sku) {
+      setError('Vui lòng điền tên sản phẩm và SKU');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await productAPI.create(formData);
+      if (response.code === 'success') {
+        alert('Tạo sản phẩm thành công!');
+        navigate('/products');
+      } else {
+        setError(response.message || 'Lỗi khi tạo sản phẩm');
+      }
+    } catch (err) {
+      console.error('Error creating product:', err);
+      setError(err.message || 'Lỗi khi tạo sản phẩm. Vui lòng thử lại.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,10 +84,11 @@ const ProductCreate = () => {
               </button>
               <button 
                 onClick={handleSubmit}
-                className="px-6 h-10 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-900/20 transition-all flex items-center gap-2"
+                disabled={loading}
+                className="px-6 h-10 rounded-lg bg-primary hover:bg-blue-600 disabled:bg-gray-400 text-white text-sm font-bold shadow-lg shadow-blue-900/20 transition-all flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-[20px]">save</span>
-                Lưu sản phẩm
+                {loading ? 'Đang lưu...' : 'Lưu sản phẩm'}
               </button>
             </div>
           </div>
@@ -72,6 +97,11 @@ const ProductCreate = () => {
 
       {/* Main Content */}
       <main className="flex-grow p-6 lg:p-8">
+        {error && (
+          <div className="max-w-7xl mx-auto mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+            {error}
+          </div>
+        )}
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Form */}
           <div className="lg:col-span-2 space-y-8">
@@ -244,8 +274,8 @@ const ProductCreate = () => {
 
           {/* Right Column - Organization */}
           <div className="lg:col-span-1 space-y-8">
-            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm sticky top-28">
-              <h2 className="text-lg font-bold mb-6 text-slate-900">Phân loại</h2>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h2 className="text-lg font-bold mb-6 text-slate-900">Organization</h2>
               <div className="space-y-6">
                 {/* Active Status Toggle */}
                 <div className="flex items-center justify-between p-3.5 rounded-lg border border-gray-200 bg-gray-50">
@@ -329,6 +359,35 @@ const ProductCreate = () => {
                       <span className="material-symbols-outlined">add</span>
                     </button>
                   </div>
+                </div>
+
+                {/* Threshold Alert */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-slate-700">Ngưỡng cảnh báo</label>
+                  <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50 p-1">
+                    <button 
+                      type="button"
+                      onClick={() => setFormData({...formData, threshold: Math.max(0, formData.threshold - 1)})}
+                      className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-200 text-slate-500 transition-colors"
+                    >
+                      <span className="material-symbols-outlined">remove</span>
+                    </button>
+                    <input 
+                      name="threshold"
+                      value={formData.threshold}
+                      onChange={handleChange}
+                      className="flex-1 text-center bg-transparent border-none text-base font-bold focus:ring-0 text-slate-900 p-0" 
+                      type="number" 
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setFormData({...formData, threshold: formData.threshold + 1})}
+                      className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-200 text-slate-500 transition-colors"
+                    >
+                      <span className="material-symbols-outlined">add</span>
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-500">Khi tồn kho ≤ ngưỡng này, sẽ cảnh báo</p>
                 </div>
 
                 <hr className="border-gray-200"/>
