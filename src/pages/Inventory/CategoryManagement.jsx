@@ -12,6 +12,8 @@ const CategoryManagement = () => {
 
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingCategoryId, setEditingCategoryId] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         description: ''
@@ -49,8 +51,21 @@ const CategoryManagement = () => {
 
     // Handle create category
     const handleCreateCategory = () => {
+        setIsEditMode(false);
+        setEditingCategoryId(null);
         setIsModalOpen(true);
         setFormData({ name: '', description: '' });
+    };
+
+    // Handle edit category
+    const handleEditCategory = (category) => {
+        setIsEditMode(true);
+        setEditingCategoryId(category.id);
+        setFormData({
+            name: category.name || '',
+            description: category.description || ''
+        });
+        setIsModalOpen(true);
     };
 
     // Handle form submit
@@ -69,32 +84,49 @@ const CategoryManagement = () => {
         }
 
         try {
-            console.log('🚀 Creating category...');
-            console.log('📝 Form data:', formData);
-            console.log('📤 Sending to API:', { name: formData.name });
+            if (isEditMode && editingCategoryId) {
+                // Update existing category
+                console.log('📝 Updating category ID:', editingCategoryId);
+                console.log('📤 Form data:', formData);
 
-            const response = await categoryAPI.create(formData);
-            console.log('✅ API Response:', response);
+                const response = await categoryAPI.update(editingCategoryId, formData);
+                console.log('✅ API Response:', response);
 
-            if (response.code === 'success') {
-                // Close modal and reset form
-                setIsModalOpen(false);
-                setFormData({ name: '', description: '' });
-
-                // Refresh categories list
-                fetchCategories();
-
-                toast.success('Tạo danh mục thành công!');
+                if (response.code === 'success') {
+                    setIsModalOpen(false);
+                    setFormData({ name: '', description: '' });
+                    setIsEditMode(false);
+                    setEditingCategoryId(null);
+                    fetchCategories();
+                    toast.success('Cập nhật danh mục thành công!');
+                } else {
+                    console.error('❌ Response error:', response);
+                    toast.error(response.message || 'Không thể cập nhật danh mục');
+                }
             } else {
-                console.error('❌ Response error:', response);
-                toast.error(response.message || 'Không thể tạo danh mục');
+                // Create new category
+                console.log('🚀 Creating category...');
+                console.log('📝 Form data:', formData);
+                console.log('📤 Sending to API:', { name: formData.name });
+
+                const response = await categoryAPI.create(formData);
+                console.log('✅ API Response:', response);
+
+                if (response.code === 'success') {
+                    setIsModalOpen(false);
+                    setFormData({ name: '', description: '' });
+                    fetchCategories();
+                    toast.success('Tạo danh mục thành công!');
+                } else {
+                    console.error('❌ Response error:', response);
+                    toast.error(response.message || 'Không thể tạo danh mục');
+                }
             }
         } catch (error) {
-            console.error('💥 Error creating category:', error);
+            console.error('💥 Error:', error);
             console.error('Error response:', error.response);
             console.error('Error data:', error.response?.data);
-            console.error('Error message:', error.response?.data?.message);
-            toast.error(error.response?.data?.message || 'Không thể tạo danh mục');
+            toast.error(error.response?.data?.message || (isEditMode ? 'Không thể cập nhật danh mục' : 'Không thể tạo danh mục'));
         }
     };
 
@@ -238,6 +270,13 @@ const CategoryManagement = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <button
+                                                    onClick={() => handleEditCategory(category)}
+                                                    className="p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors"
+                                                    title="Chỉnh sửa"
+                                                >
+                                                    <span className="material-symbols-outlined text-[20px]">edit</span>
+                                                </button>
+                                                <button
                                                     onClick={() => handleLockCategory(category.id, category.isActive)}
                                                     className={`p-2 rounded-lg transition-colors ${category.isActive
                                                         ? 'text-slate-400 hover:text-red-600 hover:bg-red-50'
@@ -304,9 +343,15 @@ const CategoryManagement = () => {
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
                         {/* Modal Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-                            <h2 className="text-xl font-bold text-slate-900">Thêm danh mục mới</h2>
+                            <h2 className="text-xl font-bold text-slate-900">
+                                {isEditMode ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
+                            </h2>
                             <button
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={() => {
+                                    setIsModalOpen(false);
+                                    setIsEditMode(false);
+                                    setEditingCategoryId(null);
+                                }}
                                 className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
                             >
                                 <span className="material-symbols-outlined text-[24px]">close</span>
@@ -351,11 +396,14 @@ const CategoryManagement = () => {
                                 </div>
                             </div>
 
-                            {/* Modal Footer */}
                             <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
                                 <button
                                     type="button"
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={() => {
+                                        setIsModalOpen(false);
+                                        setIsEditMode(false);
+                                        setEditingCategoryId(null);
+                                    }}
                                     className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                                 >
                                     Hủy
@@ -364,7 +412,7 @@ const CategoryManagement = () => {
                                     type="submit"
                                     className="px-4 py-2.5 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
                                 >
-                                    Thêm danh mục
+                                    {isEditMode ? 'Cập nhật danh mục' : 'Thêm danh mục'}
                                 </button>
                             </div>
                         </form>

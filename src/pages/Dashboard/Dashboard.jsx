@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import '../../styles/dashboard.css';
 import { dashboardAPI } from '../../api/dashboard.api';
 import { productAPI } from '../../api/product.api';
@@ -74,12 +75,12 @@ const Dashboard = () => {
 
   const handleSaveQuantity = async () => {
     if (!editingProduct) return;
-    
+
     try {
       setSubmitting(true);
       console.log('🚀 Updating product:', editingProduct.id, 'quantity:', editQuantity);
       console.log('📊 Product object:', editingProduct);
-      
+
       // Create FormData with all required fields like ProductEdit does
       const submitData = new FormData();
       submitData.append('name', editingProduct.name || '');
@@ -87,7 +88,7 @@ const Dashboard = () => {
       submitData.append('quantity', editQuantity);
       submitData.append('price', editingProduct.price || 0);
       submitData.append('threshold', editingProduct.threshold || 0);
-      
+
       console.log('📤 Submitting FormData to update product ID:', editingProduct.id);
       console.log('📝 Fields being sent:');
       console.log('  - name:', editingProduct.name);
@@ -95,10 +96,10 @@ const Dashboard = () => {
       console.log('  - quantity:', editQuantity);
       console.log('  - price:', editingProduct.price);
       console.log('  - threshold:', editingProduct.threshold);
-      
+
       const response = await productAPI.update(editingProduct.id, submitData);
       console.log('✅ API Response:', response);
-      
+
       if (response.code === 'success') {
         console.log('Product updated successfully');
         // Update the local state
@@ -177,12 +178,11 @@ const Dashboard = () => {
               </div>
               <div className="flex items-end gap-2">
                 <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
-                <span className={`mb-1 text-xs font-medium ${
-                  stat.changeType === 'positive' ? 'text-green-500' :
+                <span className={`mb-1 text-xs font-medium ${stat.changeType === 'positive' ? 'text-green-500' :
                   stat.changeType === 'warning' ? 'text-orange-500' :
-                  stat.changeType === 'negative' ? 'text-red-400' :
-                  'text-slate-500'
-                }`}>{stat.change}</span>
+                    stat.changeType === 'negative' ? 'text-red-400' :
+                      'text-slate-500'
+                  }`}>{stat.change}</span>
               </div>
             </div>
           ))}
@@ -197,10 +197,10 @@ const Dashboard = () => {
                 <span className="material-symbols-outlined text-orange-500">warning</span>
                 Cảnh báo tồn kho thấp
               </h3>
-              <a className="group flex items-center gap-1 text-sm font-medium text-primary hover:text-blue-600 transition-colors" href="#">
+              <Link to="/inventory/products/low-stock" className="group flex items-center gap-1 text-sm font-medium text-primary hover:text-blue-600 transition-colors">
                 Xem tất cả cảnh báo
                 <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_right_alt</span>
-              </a>
+              </Link>
             </div>
 
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -221,7 +221,7 @@ const Dashboard = () => {
                         <td className="px-6 py-4 font-medium text-slate-900">
                           <div className="flex items-center gap-3">
                             {item.image && (
-                              <div 
+                              <div
                                 className="h-10 w-10 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
                                 style={{ backgroundImage: `url('${item.image}')` }}
                               />
@@ -268,7 +268,7 @@ const Dashboard = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button 
+                          <button
                             onClick={() => openEditModal(item)}
                             className="inline-flex items-center justify-center gap-2 rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-900 transition-all hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-primary focus:ring-offset-2">
                             Đặt thêm
@@ -291,7 +291,7 @@ const Dashboard = () => {
                 <div className="flex flex-col gap-4">
                   {bestSelling.map((product, index) => (
                     <div key={index} className="flex items-center gap-3 border-b border-slate-200 pb-3 last:border-0 last:pb-0">
-                      <div 
+                      <div
                         className="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center"
                         style={{ backgroundImage: `url('${product.image}')` }}
                       />
@@ -330,7 +330,7 @@ const Dashboard = () => {
             <div className="mb-6 pb-6 border-b border-slate-200">
               <div className="flex items-center gap-3">
                 {editingProduct.image && (
-                  <div 
+                  <div
                     className="h-12 w-12 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
                     style={{ backgroundImage: `url('${editingProduct.image}')` }}
                   />
