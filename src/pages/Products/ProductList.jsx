@@ -321,13 +321,13 @@ const ProductList = () => {
                   return (
                     <tr key={product.id} className="hover:bg-slate-50 transition-colors group">
                       <td className="px-6 py-4">
-                        <input 
-                          type="checkbox" 
-                          className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" 
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </td>
-                      <td 
+                      <td
                         onClick={() => navigate(`/chart?id=${product.id}`)}
                         className="px-6 py-4 cursor-pointer"
                       >

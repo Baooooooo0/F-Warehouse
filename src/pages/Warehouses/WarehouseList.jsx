@@ -113,8 +113,8 @@ const WarehouseList = () => {
               setCurrentPage(1);
             }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === 'all'
-                ? 'bg-primary/10 border border-primary/20 text-primary'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+              ? 'bg-primary/10 border border-primary/20 text-primary'
+              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
           >
             Tất cả trạng thái
@@ -125,8 +125,8 @@ const WarehouseList = () => {
               setCurrentPage(1);
             }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === 'active'
-                ? 'bg-primary/10 border border-primary/20 text-primary'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+              ? 'bg-primary/10 border border-primary/20 text-primary'
+              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
           >
             Đang hoạt động
@@ -137,8 +137,8 @@ const WarehouseList = () => {
               setCurrentPage(1);
             }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === 'inactive'
-                ? 'bg-primary/10 border border-primary/20 text-primary'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+              ? 'bg-primary/10 border border-primary/20 text-primary'
+              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
           >
             Ngưng hoạt động
@@ -235,8 +235,8 @@ const WarehouseList = () => {
                         <button
                           onClick={() => handleLockWarehouse(warehouse.id, warehouse.isActive)}
                           className={`p-1.5 rounded-lg transition-colors ${warehouse.isActive
-                              ? 'text-slate-400 hover:text-red-500 hover:bg-red-500/10'
-                              : 'text-slate-400 hover:text-green-500 hover:bg-green-500/10'
+                            ? 'text-slate-400 hover:text-red-500 hover:bg-red-500/10'
+                            : 'text-slate-400 hover:text-green-500 hover:bg-green-500/10'
                             }`}
                           title={warehouse.isActive ? 'Tạm ngưng' : 'Kích hoạt'}
                         >
@@ -273,8 +273,8 @@ const WarehouseList = () => {
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
                   className={`min-w-[40px] h-10 px-3 rounded-lg text-sm font-semibold transition-colors ${currentPage === pageNum
-                      ? 'bg-primary text-white'
-                      : 'text-slate-700 hover:bg-slate-100'
+                    ? 'bg-primary text-white'
+                    : 'text-slate-700 hover:bg-slate-100'
                     }`}
                 >
                   {pageNum}

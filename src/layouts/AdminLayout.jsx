@@ -160,40 +160,9 @@ const AdminLayout = () => {
                 return activeItem?.label || 'Tổng quan';
               })()}
             </h2>
-            <div className="relative flex w-64 items-center">
-              <span className="material-symbols-outlined absolute left-3 text-slate-500">search</span>
-              <input
-                className="h-10 w-full rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary"
-                placeholder="Tìm kiếm tồn kho..."
-              />
-            </div>
           </div>
 
           <div className="flex items-center gap-4">
-            {location.pathname === '/warehouses' && (
-              <button 
-                onClick={() => navigate('/warehouses/create')}
-                className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20"
-              >
-                <span className="material-symbols-outlined text-[20px]">add</span>
-                <span className="hidden sm:inline">Thêm kho</span>
-              </button>
-            )}
-            {location.pathname === '/products' && (
-              <button 
-                onClick={() => navigate('/products/create')}
-                className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600 shadow-lg shadow-primary/20"
-              >
-                <span className="material-symbols-outlined text-[20px]">add</span>
-                <span className="hidden sm:inline">Thêm sản phẩm</span>
-              </button>
-            )}
-            {location.pathname === '/dashboard' && (
-              <button className="flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-white transition-colors hover:bg-blue-600">
-                <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-                <span className="hidden sm:inline">Đặt bổ sung hàng</span>
-              </button>
-            )}
             <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50 text-slate-500 hover:text-slate-900 transition-colors relative hover:bg-slate-100">
               <span className="material-symbols-outlined text-[24px]">notifications</span>
               <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
