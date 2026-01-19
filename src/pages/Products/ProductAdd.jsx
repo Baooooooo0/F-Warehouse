@@ -189,8 +189,8 @@ const ProductAdd = () => {
                         <span className="material-symbols-outlined text-slate-600">arrow_back</span>
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900">Add New Product</h1>
-                        <p className="text-sm text-slate-500">Inventory Management &gt; Products &gt; New</p>
+                        <h1 className="text-2xl font-bold text-slate-900">Thêm Sản Phẩm Mới</h1>
+                        <p className="text-sm text-slate-500">Quản lý Kho &gt; Sản phẩm &gt; Thêm mới</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -199,7 +199,7 @@ const ProductAdd = () => {
                         className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                         disabled={loading}
                     >
-                        Cancel
+                        Hủy
                     </button>
                     <button
                         onClick={handleSubmit}
@@ -207,7 +207,7 @@ const ProductAdd = () => {
                         disabled={loading}
                     >
                         <span className="material-symbols-outlined text-[20px]">save</span>
-                        {loading ? 'Saving...' : 'Save Product'}
+                        {loading ? 'Đang lưu...' : 'Lưu Sản Phẩm'}
                     </button>
                 </div>
             </div>
@@ -219,8 +219,8 @@ const ProductAdd = () => {
                     <div className="bg-white rounded-xl border border-slate-200 p-6">
                         <div className="flex items-center justify-between mb-4">
                             <div>
-                                <h2 className="text-lg font-bold text-slate-900">Basic Information</h2>
-                                <p className="text-sm text-slate-500">Enter the primary details for the product identification.</p>
+                                <h2 className="text-lg font-bold text-slate-900">Thông Tin Cơ Bản</h2>
+                                <p className="text-sm text-slate-500">Nhập thông tin chi tiết để nhận dạng sản phẩm.</p>
                             </div>
                             <span className="material-symbols-outlined text-primary text-[24px]">inventory_2</span>
                         </div>
@@ -229,7 +229,7 @@ const ProductAdd = () => {
                             {/* Product Name */}
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Product Name <span className="text-red-500">*</span>
+                                    Tên Sản Phẩm <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -237,7 +237,7 @@ const ProductAdd = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
-                                    placeholder="e.g., Wireless Noise-Cancelling Headphones"
+                                    placeholder="VD: Tai nghe không dây chống ồn"
                                     className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     required
                                 />
@@ -246,10 +246,10 @@ const ProductAdd = () => {
                             {/* Price */}
                             <div>
                                 <label htmlFor="price" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Price
+                                    Giá
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">$</span>
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">₫</span>
                                     <input
                                         type="number"
                                         id="price"
@@ -270,8 +270,8 @@ const ProductAdd = () => {
                     <div className="bg-white rounded-xl border border-slate-200 p-6">
                         <div className="flex items-center justify-between mb-4">
                             <div>
-                                <h2 className="text-lg font-bold text-slate-900">Product Media</h2>
-                                <p className="text-sm text-slate-500">Upload an image of the product.</p>
+                                <h2 className="text-lg font-bold text-slate-900">Hình Ảnh Sản Phẩm</h2>
+                                <p className="text-sm text-slate-500">Tải lên hình ảnh của sản phẩm.</p>
                             </div>
                         </div>
 
@@ -289,8 +289,8 @@ const ProductAdd = () => {
                                     <span className="material-symbols-outlined text-primary text-[24px]">cloud_upload</span>
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium text-slate-900">Click to upload or drag and drop</p>
-                                    <p className="text-xs text-slate-500">PNG, JPG or GIF (max. 10MB)</p>
+                                    <p className="text-sm font-medium text-slate-900">Nhấp để tải lên hoặc kéo thả</p>
+                                    <p className="text-xs text-slate-500">PNG, JPG hoặc GIF (tối đa 10MB)</p>
                                 </div>
                             </label>
                         </div>
@@ -315,13 +315,13 @@ const ProductAdd = () => {
                 {/* Right Column - Organization */}
                 <div className="lg:col-span-1">
                     <div className="bg-white rounded-xl border border-slate-200 p-6 sticky top-6">
-                        <h2 className="text-lg font-bold text-slate-900 mb-4">Organization</h2>
+                        <h2 className="text-lg font-bold text-slate-900 mb-4">Phân Loại</h2>
 
                         <div className="space-y-4">
                             {/* Category */}
                             <div>
                                 <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Category
+                                    Danh Mục
                                 </label>
                                 {console.log('🎨 Rendering category dropdown. Categories state:', categories)}
                                 {console.log('🔢 Categories length:', categories.length)}
@@ -335,7 +335,7 @@ const ProductAdd = () => {
                                         }
                                     }}
                                 >
-                                    <option value="">Select category...</option>
+                                    <option value="">Chọn danh mục...</option>
                                     {categories.map((category) => {
                                         console.log('🏷️ Rendering category option:', category);
                                         return (
@@ -371,7 +371,7 @@ const ProductAdd = () => {
                             {/* Warehouse Location */}
                             <div>
                                 <label htmlFor="warehouseId" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Warehouse Location <span className="text-red-500">*</span>
+                                    Vị Trí Kho <span className="text-red-500">*</span>
                                 </label>
                                 <div className="relative">
                                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">warehouse</span>
@@ -383,7 +383,7 @@ const ProductAdd = () => {
                                         className="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                                         required
                                     >
-                                        <option value="">Select warehouse...</option>
+                                        <option value="">Chọn kho...</option>
                                         {warehouses.map((warehouse) => (
                                             <option key={warehouse.id} value={warehouse.id}>
                                                 {warehouse.name}
@@ -396,7 +396,7 @@ const ProductAdd = () => {
                             {/* Quantity on Hand */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                                    Quantity on Hand
+                                    Số Lượng Tồn Kho
                                 </label>
                                 <div className="flex items-center gap-3">
                                     <button
