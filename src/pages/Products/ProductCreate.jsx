@@ -16,9 +16,12 @@ const ProductCreate = () => {
     category: '',
     warehouse: 'Main Warehouse (NY)',
     quantity: 150,
+    threshold: 50,
     status: 'active',
     supplier: 'TechCorp Inc.'
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,7 +31,7 @@ const ProductCreate = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Creating product:', formData);
     toast.success('Tạo sản phẩm thành công!');
@@ -62,10 +65,11 @@ const ProductCreate = () => {
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-6 h-10 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-900/20 transition-all flex items-center gap-2"
+                disabled={loading}
+                className="px-6 h-10 rounded-lg bg-primary hover:bg-blue-600 disabled:bg-gray-400 text-white text-sm font-bold shadow-lg shadow-blue-900/20 transition-all flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-[20px]">save</span>
-                Lưu sản phẩm
+                {loading ? 'Đang lưu...' : 'Lưu sản phẩm'}
               </button>
             </div>
           </div>
@@ -74,6 +78,11 @@ const ProductCreate = () => {
 
       {/* Main Content */}
       <main className="flex-grow p-6 lg:p-8">
+        {error && (
+          <div className="max-w-7xl mx-auto mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+            {error}
+          </div>
+        )}
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Form */}
           <div className="lg:col-span-2 space-y-8">
@@ -246,8 +255,8 @@ const ProductCreate = () => {
 
           {/* Right Column - Organization */}
           <div className="lg:col-span-1 space-y-8">
-            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm sticky top-28">
-              <h2 className="text-lg font-bold mb-6 text-slate-900">Phân loại</h2>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h2 className="text-lg font-bold mb-6 text-slate-900">Organization</h2>
               <div className="space-y-6">
                 {/* Active Status Toggle */}
                 <div className="flex items-center justify-between p-3.5 rounded-lg border border-gray-200 bg-gray-50">

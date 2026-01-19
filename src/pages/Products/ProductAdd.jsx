@@ -20,6 +20,7 @@ const ProductAdd = () => {
         threshold: '',
         categoryId: [], // Array of category IDs
         image: null, // File object
+        threshold: 0,
     });
 
     useEffect(() => {
@@ -74,6 +75,12 @@ const ProductAdd = () => {
         setFormData(prev => ({
             ...prev,
             quantity: Math.max(0, prev.quantity + delta)
+        }));
+    };
+    const handleThresholdChange = (delta) => {
+        setFormData(prev => ({
+            ...prev,
+            threshold: Math.max(0, prev.threshold + delta)
         }));
     };
 
@@ -133,6 +140,9 @@ const ProductAdd = () => {
                 submitData.append('categoryId', categoryIdJson);
                 console.log('📦 CategoryId JSON:', categoryIdJson);
             }
+
+            // Append threshold
+            submitData.append('threshold', formData.threshold);
 
             // Append image if selected
             if (formData.image) {

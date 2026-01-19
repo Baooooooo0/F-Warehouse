@@ -22,6 +22,7 @@ const ProductEdit = () => {
         categoryId: [],
         image: null,
         currentImage: '', // To display existing image
+        threshold: 0,
     });
 
     useEffect(() => {
@@ -51,6 +52,7 @@ const ProductEdit = () => {
                     categoryId: product.categoryIds ? product.categoryIds.map(c => c.categoryId) : [],
                     image: null,
                     currentImage: product.image || '',
+                    threshold: product.threshold || 0,
                 });
 
                 console.log('✅ Form pre-filled with product data');
@@ -141,6 +143,7 @@ const ProductEdit = () => {
             submitData.append('warehouseId', formData.warehouseId);
             submitData.append('quantity', formData.quantity);
             submitData.append('price', formData.price || 0);
+            submitData.append('threshold', formData.threshold);
 
             if (formData.categoryId.length > 0) {
                 const categoryIdJson = JSON.stringify(formData.categoryId);
@@ -182,6 +185,13 @@ const ProductEdit = () => {
         setFormData(prev => ({
             ...prev,
             quantity: Math.max(0, prev.quantity + delta)
+        }));
+    };
+
+    const handleThresholdChange = (delta) => {
+        setFormData(prev => ({
+            ...prev,
+            threshold: Math.max(0, prev.threshold + delta)
         }));
     };
 
@@ -443,6 +453,38 @@ const ProductEdit = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleQuantityChange(1)}
+                                        className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined text-[20px]">add</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Threshold Alert */}
+                            <div>
+                                <label htmlFor="threshold" className="block text-sm font-medium text-slate-700 mb-2">
+                                    Ngưỡng cảnh báo
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleThresholdChange(-1)}
+                                        className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined text-[20px]">remove</span>
+                                    </button>
+                                    <input
+                                        type="number"
+                                        id="threshold"
+                                        name="threshold"
+                                        value={formData.threshold}
+                                        onChange={handleInputChange}
+                                        className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        min="0"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleThresholdChange(1)}
                                         className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                                     >
                                         <span className="material-symbols-outlined text-[20px]">add</span>

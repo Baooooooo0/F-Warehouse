@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/dashboard.css';
 import { dashboardAPI } from '../../api/dashboard.api';
+import { productAPI } from '../../api/product.api';
 
 const Dashboard = () => {
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalInventoryValue, seTtotalInventoryValue] = useState(0);
   const [totalLowQuantityProduct, setTotalLowQuantityProduct] = useState(0);
   const [totalWarehouse, setTotalWarehouse] = useState(0);
+  const [lowStockItems, setLowStockItems] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [editQuantity, setEditQuantity] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetchTotalProducts();
+    fetchLowStockProducts();
   }, []);
 
   const fetchTotalProducts = async () => {
@@ -23,13 +30,98 @@ const Dashboard = () => {
       setTotalLowQuantityProduct(response.data.totalLowQuantityProduct);
       setTotalWarehouse(response.data.totalWarehouse);
 
-
-      console.log('Total products fetched:', response);
     } catch (error) {
       console.error('Error fetching total products:', error);
       setTotalProducts('8');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLowStockProducts = async () => {
+    try {
+      const response = await dashboardAPI.getLowStock();
+      console.log('Low stock products response:', response.data);
+      // Log first item to see all fields
+      if (response.data && response.data.length > 0) {
+        // console.log('📋 First product fields:', Object.keys(response.data[0]));
+        // console.log('📊 First product data:', response.data[0]);
+      }
+      // response.data is the array of low stock products
+      setLowStockItems(response.data || []);
+    } catch (error) {
+      console.error('Error fetching low stock products:', error);
+      setLowStockItems([]);
+    }
+  };
+
+  const openEditModal = (product) => {
+    // console.log('📋 Opening edit modal for product:', product);
+    // console.log('🔍 Available fields:', Object.keys(product));
+    // console.log('📊 Product ID:', product.id, 'Type:', typeof product.id);
+    // console.log('🏢 Product warehouseId:', product.warehouseId);
+    // console.log('📦 Product warehouse:', product.warehouse);
+    setEditingProduct(product);
+    setEditQuantity(product.quantity);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingProduct(null);
+    setEditQuantity(0);
+  };
+
+  const handleSaveQuantity = async () => {
+    if (!editingProduct) return;
+    
+    try {
+      setSubmitting(true);
+      console.log('🚀 Updating product:', editingProduct.id, 'quantity:', editQuantity);
+      console.log('📊 Product object:', editingProduct);
+      
+      // Create FormData with all required fields like ProductEdit does
+      const submitData = new FormData();
+      submitData.append('name', editingProduct.name || '');
+      submitData.append('warehouseId', editingProduct.warehouseId || '');
+      submitData.append('quantity', editQuantity);
+      submitData.append('price', editingProduct.price || 0);
+      submitData.append('threshold', editingProduct.threshold || 0);
+      
+      console.log('📤 Submitting FormData to update product ID:', editingProduct.id);
+      console.log('📝 Fields being sent:');
+      console.log('  - name:', editingProduct.name);
+      console.log('  - warehouseId:', editingProduct.warehouseId);
+      console.log('  - quantity:', editQuantity);
+      console.log('  - price:', editingProduct.price);
+      console.log('  - threshold:', editingProduct.threshold);
+      
+      const response = await productAPI.update(editingProduct.id, submitData);
+      console.log('✅ API Response:', response);
+      
+      if (response.code === 'success') {
+        console.log('Product updated successfully');
+        // Update the local state
+        setLowStockItems(prevItems =>
+          prevItems.map(item =>
+            item.id === editingProduct.id ? { ...item, quantity: editQuantity } : item
+          )
+        );
+        // Refresh total products
+        fetchTotalProducts();
+        closeEditModal();
+        alert('Cập nhật số lượng thành công!');
+      } else {
+        console.error('❌ Response error:', response);
+        alert(response.message || 'Cập nhật thất bại');
+      }
+    } catch (error) {
+      console.error('💥 Error updating quantity:', error);
+      console.error('Error response:', error.response);
+      console.error('Error data:', error.response?.data);
+      alert(error.response?.data?.message || 'Lỗi khi cập nhật số lượng');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -68,66 +160,9 @@ const Dashboard = () => {
     }
   ];
 
-  const lowStockItems = [
-    {
-      name: 'Wireless Mouse',
-      sku: 'WM-001',
-      quantity: 5,
-      threshold: 15,
-      status: 'Nguy cấp',
-      statusColor: 'red',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBprt3qPDr2X18Ggs6veLmnd6KON4Flpkn7OwY57aUfrmKufhjFNp15j0YhBfduRV5zOvIDnkkIXTfGECRjzhe9DgkoBgdcj5xgUtk8blo04mBR2TU_2__KF3aOFNKxrmX0BEtCa25qg4xdBNyh9vblpjKCvs74hsJ_4sodbC2rcoIhXcrZnshLonRuR3PkBDsJF5qHvRwNIGrFrY6ZK0uDaVNz45pdV0c1nLPzwacoOzTfWCpDQaEJmcI3wwhmC0R2FNh8FOoNfvq6'
-    },
-    {
-      name: 'USB-C Cable',
-      sku: 'UC-299',
-      quantity: 2,
-      threshold: 20,
-      status: 'Nguy cấp',
-      statusColor: 'red',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-M3kEz7vXouNvHhvY84E1ogzWFc5AyQYz-zI4RIP6gqQAVWaFNVWv1Bb63BIbdVnrCW4wPm9p_OYYVgIZUdjqW6u3RNwclY0iPx33jXJpUqG5eVeB4E-cODhS5taAbreAxuXKUXMgXGrg906l328DjtWDEQww1uz14XZp8EMuRmYaXlzzOAESKig7rU0-NmZfOxlQA3NE8bYe5_wAQd_S48rAeMC7NIUzgb_yRqWXrubnZmprOomjUymXxUFEt5O2V0NKIZwfAe9i'
-    },
-    {
-      name: 'Monitor Stand',
-      sku: 'MS-550',
-      quantity: 8,
-      threshold: 12,
-      status: 'Sắp hết',
-      statusColor: 'orange',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDz-RYWKBZrMs0JfHa5XiDik3QodGkJ6AlRhEbHw8Etaxp7Z9SVOjEFTAGg-Ljxb9WwrXbkgdkFAUZKr5wWLgf8u0OG4jaf5NzHocjEIoObnsv2qIUo8pIm3E54RrREur0-KOTeMLlKwIU25zNiY--WhICixj2ahTW_QJql4DNzhX4OnW-lbSSAzMZAK5JDs0bQ6LXxLRnEaeNQlzKi8Z5vBhQ8BrKpISOLYb2-GyNKOId8X5P7LAGkWvSbjNMevH8BH2NATLRcf8zU'
-    },
-    {
-      name: 'HDMI Adapter',
-      sku: 'HA-101',
-      quantity: 0,
-      threshold: 30,
-      status: 'Hết hàng',
-      statusColor: 'red',
-      icon: 'block',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3pdyiGgaC1HrKRaojdAVLNF2hVSztdob1jxUoDkY_TVw5gr-CrFqA1ex6MLepAjuyvwRfTq5aoYAoQHYci9ZJrLsbVF-byT9Mu8zljsjTqUxHsn4-fnjJ-yiWsSrwFJBkxRApPSVw8gJDsAHtvCsUuxdCFM7S_mDCxJEZuIg_DUATlTDqrKG5PuaiBZKyCltzEMQLjnW8OmMLTOkWJ8HHecyPUT0S3mV6dUfF3q5NHOEv38_K9a-dt8rGvJJ9LfavHnGhbu4Lg9SB'
-    },
-    {
-      name: 'Ergo Keyboard',
-      sku: 'EK-888',
-      quantity: 4,
-      threshold: 10,
-      status: 'Sắp hết',
-      statusColor: 'orange',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAx7CcF2CuwBgzdho4M6Y01WHEVN8mHGhbM-s9gXqTWC5BaeH1LCie4xA5vo-vyBXJE3sQgMdTMdwoqwpo8YqNtEagRkjqHIAIPlY3_7Vj4flNKoQ-RZZ0ZiTMfu6UqiQVVwDD7nmEK1G4RU0xMg3rMmq7mPeuU_WJ0vJBEtdZdnvgUT48lyCHqNaSmxc96gYU_4CkOktoRZ121Bu9iaVMhEwErLB0IE2w1IkFuS1a9rXRsnjAaVfSMnsp4goqHYGFnRPDXzSIV3gBZ'
-    }
-  ];
+  const bestSelling = [];
 
-  const bestSelling = [
-    { name: 'Noise Cancelling Headphones', units: '1.204 sản phẩm đã bán', revenue: '+$24k', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCxoGHtDSduqNZddhTyEIqRCcPb_JZT8ZxL8WAb5WLT-bRVc7jiA_V6WDWVv_1oQ7xUDuJBvkQatBfV8eJb43h45dg5eHKNJiXBaCck5fjgFZ2Xb0AprTQTfBIYO85hT_Ox-NvpObeSGZpaIk9P0Ht9Klf-N3k-nJKmHxqu43F2oWI0CD5A7W7QMTMwuYQtXED_I7XT2gc86sJAeyLuYOk_e2Qq6V1r9iGa7qtscm4QydaCnJu-YCeWVrCDLXTiY3-KHrS48W3SFXcX' },
-    { name: 'Smart Watch Series 5', units: '985 sản phẩm đã bán', revenue: '+$18k', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbeAzCPlygIe8yHCe0WjMQNPO81wk0KAcPR5_UKfCpsIVAVNWTzkKsO3iz1H8h1g9KRfTC1rUuKCNAI1nCjh-fX5kcRL5zQJJzMR4dQRxaS04tw9pxy4vE0pGhfE888LXcUJhCW0Thhzgy9KvF2tqMoixdp_SigwIgoh9KLxzj-J779cvLGTijJ9BE6u7I9RK1ay50JwBw5J9owO5C7540ixw2FxdMMER5C1wCew6vyyTTq-3SqyqNRxdHG0kiUS5WoIAl0ZC_Ar_j' },
-    { name: 'Mechanical Keyboard', units: '850 sản phẩm đã bán', revenue: '+$12k', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjbTpGGA67VXNwgqm0B-HU4EK-ufEvvpyctRTkIMfEl2ovzEM4ZNP3n038Gd_516_b4rag92_K9B3CBuzmXkHAI3rosHspcNlbd-eYReMooMzZbsE_phfOg5EbicKyhijPF-pqhxYjsbHfY50Rvcp5uw23N2elzGYjHLC8VUOEr8fklT-YIqx4DXfBiOGOH5XGB2bIsEHkARXLRzEWgGpnkDKir4PklSJ68aXSRykaeuNR09kqWQ0Zx_9BL891e73BqAmtfycBb93w' }
-  ];
-
-  const leastSelling = [
-    { name: 'Old Gen Webcam', lastSale: '45 ngày trước' },
-    { name: 'VGA Cable', lastSale: '62 ngày trước' },
-    { name: 'Phone Case (iPhone 6)', lastSale: '90 ngày trước' }
-  ];
+  const leastSelling = [];
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -185,13 +220,20 @@ const Dashboard = () => {
                       <tr key={index} className="group hover:bg-slate-50 transition-colors">
                         <td className="px-6 py-4 font-medium text-slate-900">
                           <div className="flex items-center gap-3">
-                            <div 
-                              className="h-10 w-10 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
-                              style={{ backgroundImage: `url('${item.image}')` }}
-                            />
+                            {item.image && (
+                              <div 
+                                className="h-10 w-10 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                                style={{ backgroundImage: `url('${item.image}')` }}
+                              />
+                            )}
+                            {!item.image && (
+                              <div className="h-10 w-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                <span className="material-symbols-outlined text-slate-400">image</span>
+                              </div>
+                            )}
                             <div className="flex flex-col">
                               <span>{item.name}</span>
-                              <span className="text-xs font-normal text-slate-500">SKU: {item.sku}</span>
+                              <span className="text-xs font-normal text-slate-500">ID: {item.id}</span>
                             </div>
                           </div>
                         </td>
@@ -203,22 +245,32 @@ const Dashboard = () => {
                           <span className="text-sm">{item.threshold}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
-                            item.statusColor === 'red' ? 'bg-red-500/10 text-red-600 ring-red-600/20' :
-                            'bg-orange-500/10 text-orange-600 ring-orange-600/20'
-                          }`}>
-                            {item.icon ? (
-                              <span className="material-symbols-outlined text-[14px]">{item.icon}</span>
-                            ) : (
-                              <span className={`h-1.5 w-1.5 rounded-full ${
-                                item.statusColor === 'red' ? 'bg-red-500' : 'bg-orange-500'
-                              }`}></span>
-                            )}
-                            {item.status}
-                          </span>
+                          {item.quantity === 0 ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-red-500/10 text-red-600 ring-red-600/20">
+                              <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                              Hết hàng
+                            </span>
+                          ) : item.quantity <= item.threshold * 0.2 ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-red-500/10 text-red-600 ring-red-600/20">
+                              <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                              Nguy cấp
+                            </span>
+                          ) : item.quantity <= item.threshold * 0.5 ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-orange-500/10 text-orange-600 ring-orange-600/20">
+                              <span className="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
+                              Sắp hết
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-green-500/10 text-green-600 ring-green-600/20">
+                              <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                              Bình thường
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-900 transition-all hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                          <button 
+                            onClick={() => openEditModal(item)}
+                            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-900 transition-all hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-primary focus:ring-offset-2">
                             Đặt thêm
                           </button>
                         </td>
@@ -258,6 +310,107 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Quantity Modal */}
+      {showEditModal && editingProduct && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-slate-900">Cập nhật số lượng</h2>
+              <button
+                onClick={closeEditModal}
+                className="text-slate-400 hover:text-slate-600 p-1 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <span className="material-symbols-outlined text-[24px]">close</span>
+              </button>
+            </div>
+
+            {/* Product Info */}
+            <div className="mb-6 pb-6 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                {editingProduct.image && (
+                  <div 
+                    className="h-12 w-12 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                    style={{ backgroundImage: `url('${editingProduct.image}')` }}
+                  />
+                )}
+                {!editingProduct.image && (
+                  <div className="h-12 w-12 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-slate-400">image</span>
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <p className="font-medium text-slate-900">{editingProduct.name}</p>
+                  <p className="text-sm text-slate-500">ID: {editingProduct.id}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quantity Input */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                Số lượng hiện tại: <span className="text-primary font-bold">{editingProduct.quantity}</span>
+              </label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Cập nhật số lượng mới
+              </label>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditQuantity(Math.max(0, editQuantity - 1))}
+                  className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[20px]">remove</span>
+                </button>
+                <input
+                  type="number"
+                  value={editQuantity}
+                  onChange={(e) => setEditQuantity(Math.max(0, Number(e.target.value)))}
+                  className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-center font-bold focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  min="0"
+                />
+                <button
+                  type="button"
+                  onClick={() => setEditQuantity(editQuantity + 1)}
+                  className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[20px]">add</span>
+                </button>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">Thay đổi: {editQuantity - editingProduct.quantity > 0 ? '+' : ''}{editQuantity - editingProduct.quantity}</p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={closeEditModal}
+                disabled={submitting}
+                className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleSaveQuantity}
+                disabled={submitting}
+                className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-white font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {submitting ? (
+                  <>
+                    <span className="material-symbols-outlined text-[18px] animate-spin">refresh</span>
+                    Đang lưu...
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-[18px]">save</span>
+                    Lưu
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
