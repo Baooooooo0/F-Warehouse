@@ -78,7 +78,10 @@ const Dashboard = () => {
 
     try {
       setSubmitting(true);
-      console.log('🚀 Updating product:', editingProduct.id, 'quantity:', editQuantity);
+      console.log('🚀 Updating product:', editingProduct.id);
+      console.log('🔍 ID Type:', typeof editingProduct.id);
+      console.log('🔍 ID Value (raw):', JSON.stringify(editingProduct.id));
+      console.log('🔍 ID Length:', String(editingProduct.id).length);
       console.log('📊 Product object:', editingProduct);
 
       // Create FormData with all required fields like ProductEdit does
@@ -88,7 +91,14 @@ const Dashboard = () => {
       submitData.append('quantity', editQuantity);
       submitData.append('price', editingProduct.price || 0);
       submitData.append('threshold', editingProduct.threshold || 0);
-
+      
+      // Add categoryId if available
+      if (editingProduct.categoryIds && editingProduct.categoryIds.length > 0) {
+        const categoryIds = editingProduct.categoryIds.map(c => c.categoryId || c.id || c);
+        submitData.append('categoryId', JSON.stringify(categoryIds));
+        console.log('📦 CategoryId:', categoryIds);
+      }
+      
       console.log('📤 Submitting FormData to update product ID:', editingProduct.id);
       console.log('📝 Fields being sent:');
       console.log('  - name:', editingProduct.name);
@@ -96,8 +106,14 @@ const Dashboard = () => {
       console.log('  - quantity:', editQuantity);
       console.log('  - price:', editingProduct.price);
       console.log('  - threshold:', editingProduct.threshold);
-
-      const response = await productAPI.update(editingProduct.id, submitData);
+      
+      // Log all FormData entries
+      console.log('📋 FormData entries:');
+      for (let [key, value] of submitData.entries()) {
+        console.log(`    ${key}: ${value}`);
+      }
+      
+      const response = await productAPI.orderItem(editingProduct.id, editQuantity);
       console.log('✅ API Response:', response);
 
       if (response.code === 'success') {

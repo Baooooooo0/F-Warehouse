@@ -165,6 +165,9 @@ const ProductEdit = () => {
 
             console.log('📤 Submitting FormData to update product ID:', id);
 
+            const endpoint = `/product/update/${id}`;
+            console.log('🔗 API Endpoint:', endpoint);
+
             const response = await productAPI.update(id, submitData);
             console.log('✅ API Response:', response);
 
