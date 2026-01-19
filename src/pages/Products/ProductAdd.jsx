@@ -18,9 +18,8 @@ const ProductAdd = () => {
         quantity: 0,
         price: '',
         threshold: '',
-        categoryId: [], // Array of category IDs
-        image: null, // File object
-        threshold: 0,
+        categoryId: [],
+        image: null,
     });
 
     useEffect(() => {
@@ -30,27 +29,14 @@ const ProductAdd = () => {
 
     const fetchCategories = async () => {
         try {
-            console.log('🔍 Fetching categories...');
-            // Pass empty params to avoid any default filtering
-            // Backend will not apply isActive filter if query param is not provided
             const response = await categoryAPI.getAll({});
-            console.log('📦 Category API Response:', response);
-            console.log('✅ Response code:', response.code);
-            console.log('📊 Response data:', response.data);
-
             if (response.code === 'success') {
                 setCategories(response.data || []);
-                console.log('✨ Categories set to state:', response.data);
-                console.log('📝 Number of categories:', response.data?.length);
-            } else {
-                console.error('❌ Response code is not success:', response.code);
             }
         } catch (error) {
-            console.error('💥 Error fetching categories:', error);
-            console.error('Error details:', error.response?.data);
+            // Silent fail
         }
     };
-
 
     const fetchWarehouses = async () => {
         try {
@@ -59,7 +45,7 @@ const ProductAdd = () => {
                 setWarehouses(response.data || []);
             }
         } catch (error) {
-            console.error('Error fetching warehouses:', error);
+            // Silent fail
         }
     };
 
@@ -75,12 +61,6 @@ const ProductAdd = () => {
         setFormData(prev => ({
             ...prev,
             quantity: Math.max(0, prev.quantity + delta)
-        }));
-    };
-    const handleThresholdChange = (delta) => {
-        setFormData(prev => ({
-            ...prev,
-            threshold: Math.max(0, prev.threshold + delta)
         }));
     };
 
@@ -113,7 +93,6 @@ const ProductAdd = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate required fields
         if (!formData.name.trim() || !formData.warehouseId) {
             toast.warning('Vui lòng điền đầy đủ các trường bắt buộc (Tên và Kho hàng)');
             return;
@@ -121,10 +100,7 @@ const ProductAdd = () => {
 
         try {
             setLoading(true);
-            console.log('🚀 Submitting product...');
-            console.log('📝 Form data:', formData);
 
-            // Create FormData for file upload
             const submitData = new FormData();
             submitData.append('name', formData.name);
             submitData.append('warehouseId', formData.warehouseId);
@@ -134,42 +110,24 @@ const ProductAdd = () => {
                 submitData.append('threshold', formData.threshold);
             }
 
-            // Backend expects categoryId as JSON string array
             if (formData.categoryId.length > 0) {
                 const categoryIdJson = JSON.stringify(formData.categoryId);
                 submitData.append('categoryId', categoryIdJson);
-                console.log('📦 CategoryId JSON:', categoryIdJson);
             }
 
-            // Append threshold
-            submitData.append('threshold', formData.threshold);
-
-            // Append image if selected
             if (formData.image) {
                 submitData.append('image', formData.image);
-                console.log('🖼️ Image file:', formData.image.name);
-            }
-
-            // Log FormData contents
-            console.log('📤 Submitting FormData:');
-            for (let pair of submitData.entries()) {
-                console.log(`  ${pair[0]}:`, pair[1]);
             }
 
             const response = await productAPI.create(submitData);
-            console.log('✅ API Response:', response);
 
             if (response.code === 'success') {
                 toast.success('Tạo sản phẩm thành công!');
                 navigate('/inventory/products');
             } else {
-                console.error('❌ Response error:', response);
                 toast.error(response.message || 'Không thể tạo sản phẩm');
             }
         } catch (error) {
-            console.error('💥 Error creating product:', error);
-            console.error('Error response:', error.response);
-            console.error('Error data:', error.response?.data);
             toast.error(error.response?.data?.message || 'Không thể tạo sản phẩm');
         } finally {
             setLoading(false);
@@ -333,8 +291,6 @@ const ProductAdd = () => {
                                 <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-2">
                                     Danh Mục
                                 </label>
-                                {console.log('🎨 Rendering category dropdown. Categories state:', categories)}
-                                {console.log('🔢 Categories length:', categories.length)}
                                 <select
                                     id="category"
                                     className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
@@ -346,14 +302,11 @@ const ProductAdd = () => {
                                     }}
                                 >
                                     <option value="">Chọn danh mục...</option>
-                                    {categories.map((category) => {
-                                        console.log('🏷️ Rendering category option:', category);
-                                        return (
-                                            <option key={category.id} value={category.id}>
-                                                {category.name}
-                                            </option>
-                                        );
-                                    })}
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
                                 </select>
 
                                 {/* Selected Categories */}

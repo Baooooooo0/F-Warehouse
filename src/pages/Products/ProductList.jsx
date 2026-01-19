@@ -46,10 +46,9 @@ const ProductList = () => {
       const response = await categoryAPI.getAll();
       if (response.code === 'success') {
         setCategories(response.data || []);
-        console.log('ProductList - Fetched categories:', response.data);
       }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      // Silent fail
     }
   };
 
@@ -61,7 +60,7 @@ const ProductList = () => {
         setWarehouses(response.data || []);
       }
     } catch (error) {
-      console.error('Error fetching warehouses:', error);
+      // Silent fail
     }
   };
 
@@ -99,7 +98,6 @@ const ProductList = () => {
         });
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
       setProducts([]);
     } finally {
       setLoading(false);
@@ -110,11 +108,10 @@ const ProductList = () => {
     try {
       const response = await productAPI.lock(id, currentStatus);
       if (response.code === 'success') {
-        fetchProducts(); // Refresh the list
+        fetchProducts();
         toast.success(currentStatus ? 'Tạm ngưng sản phẩm thành công!' : 'Kích hoạt sản phẩm thành công!');
       }
     } catch (error) {
-      console.error('Error locking product:', error);
       toast.error('Không thể cập nhật trạng thái sản phẩm');
     }
   };

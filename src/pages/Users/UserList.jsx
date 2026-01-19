@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userAPI } from '../../api/user.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const UserList = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const UserList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(null);
+  const toast = useToast();
 
   useEffect(() => {
     fetchUsers();
@@ -22,10 +24,6 @@ const UserList = () => {
     } catch (err) {
       const errorMessage = err.response?.data?.message || err.message || 'Failed to load users';
       setError(errorMessage);
-      console.error('Error fetching users:', err);
-      console.error('Response data:', err.response?.data);
-      console.error('Response status:', err.response?.status);
-      console.error('Request URL:', err.config?.url);
     } finally {
       setLoading(false);
     }
@@ -40,9 +38,9 @@ const UserList = () => {
     try {
       await userAPI.delete(id);
       setUsers(users.filter(u => u.id !== id));
+      toast.success('Xóa người dùng thành công!');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete user');
-      console.error('Error deleting user:', err);
+      toast.error(err.response?.data?.message || 'Không thể xóa người dùng');
     } finally {
       setDeleting(null);
     }
@@ -58,7 +56,7 @@ const UserList = () => {
           Tạo tài khoản
         </button>
       </div>
-      
+
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
           <span className="material-symbols-outlined text-red-600 flex-shrink-0">error</span>

@@ -179,13 +179,11 @@ const RoleManagement = () => {
 
   // Handle edit role
   const handleEdit = (roleId) => {
-    console.log('Edit role:', roleId);
     // TODO: Implement edit functionality
   };
 
   // Handle delete role
   const handleDelete = (roleId) => {
-    console.log('Delete role:', roleId);
     // TODO: Implement delete functionality
   };
 
@@ -207,7 +205,6 @@ const RoleManagement = () => {
 
     try {
       // TODO: Replace with actual API endpoint
-      console.log('Sending to backend:', formData);
 
       // Example API call (uncomment when backend is ready):
       // const response = await fetch('/api/roles', {
@@ -223,7 +220,6 @@ const RoleManagement = () => {
 
       toast.success('Tạo vai trò thành công!');
     } catch (error) {
-      console.error('Error creating role:', error);
       toast.error('Tạo vai trò thất bại');
     }
   };

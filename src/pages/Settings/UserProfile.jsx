@@ -31,7 +31,6 @@ const Settings = () => {
   };
 
   const handleSave = () => {
-    console.log('Saving profile:', formData);
     toast.success('Cập nhật thông tin thành công!');
   };
 
@@ -56,8 +55,8 @@ const Settings = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`border-b-2 px-1 py-4 text-sm font-semibold transition-colors ${activeTab === tab.id
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
                   }`}
               >
                 {tab.label}

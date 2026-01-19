@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../../styles/dashboard.css';
 import { dashboardAPI } from '../../api/dashboard.api';
 import { productAPI } from '../../api/product.api';
+import { useToast } from '../../components/Toast/Toast';
 
 const Dashboard = () => {
   const [totalProducts, setTotalProducts] = useState(0);
@@ -16,6 +17,7 @@ const Dashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [editQuantity, setEditQuantity] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     fetchTotalProducts();
@@ -30,9 +32,7 @@ const Dashboard = () => {
       seTtotalInventoryValue(response.data.totalInventoryValue);
       setTotalLowQuantityProduct(response.data.totalLowQuantityProduct);
       setTotalWarehouse(response.data.totalWarehouse);
-
     } catch (error) {
-      console.error('Error fetching total products:', error);
       setTotalProducts('8');
     } finally {
       setLoading(false);
@@ -42,26 +42,13 @@ const Dashboard = () => {
   const fetchLowStockProducts = async () => {
     try {
       const response = await dashboardAPI.getLowStock();
-      console.log('Low stock products response:', response.data);
-      // Log first item to see all fields
-      if (response.data && response.data.length > 0) {
-        // console.log('📋 First product fields:', Object.keys(response.data[0]));
-        // console.log('📊 First product data:', response.data[0]);
-      }
-      // response.data is the array of low stock products
       setLowStockItems(response.data || []);
     } catch (error) {
-      console.error('Error fetching low stock products:', error);
       setLowStockItems([]);
     }
   };
 
   const openEditModal = (product) => {
-    // console.log('📋 Opening edit modal for product:', product);
-    // console.log('🔍 Available fields:', Object.keys(product));
-    // console.log('📊 Product ID:', product.id, 'Type:', typeof product.id);
-    // console.log('🏢 Product warehouseId:', product.warehouseId);
-    // console.log('📦 Product warehouse:', product.warehouse);
     setEditingProduct(product);
     setEditQuantity(product.quantity);
     setShowEditModal(true);
@@ -78,65 +65,23 @@ const Dashboard = () => {
 
     try {
       setSubmitting(true);
-      console.log('🚀 Updating product:', editingProduct.id);
-      console.log('🔍 ID Type:', typeof editingProduct.id);
-      console.log('🔍 ID Value (raw):', JSON.stringify(editingProduct.id));
-      console.log('🔍 ID Length:', String(editingProduct.id).length);
-      console.log('📊 Product object:', editingProduct);
 
-      // Create FormData with all required fields like ProductEdit does
-      const submitData = new FormData();
-      submitData.append('name', editingProduct.name || '');
-      submitData.append('warehouseId', editingProduct.warehouseId || '');
-      submitData.append('quantity', editQuantity);
-      submitData.append('price', editingProduct.price || 0);
-      submitData.append('threshold', editingProduct.threshold || 0);
-      
-      // Add categoryId if available
-      if (editingProduct.categoryIds && editingProduct.categoryIds.length > 0) {
-        const categoryIds = editingProduct.categoryIds.map(c => c.categoryId || c.id || c);
-        submitData.append('categoryId', JSON.stringify(categoryIds));
-        console.log('📦 CategoryId:', categoryIds);
-      }
-      
-      console.log('📤 Submitting FormData to update product ID:', editingProduct.id);
-      console.log('📝 Fields being sent:');
-      console.log('  - name:', editingProduct.name);
-      console.log('  - warehouseId:', editingProduct.warehouseId);
-      console.log('  - quantity:', editQuantity);
-      console.log('  - price:', editingProduct.price);
-      console.log('  - threshold:', editingProduct.threshold);
-      
-      // Log all FormData entries
-      console.log('📋 FormData entries:');
-      for (let [key, value] of submitData.entries()) {
-        console.log(`    ${key}: ${value}`);
-      }
-      
       const response = await productAPI.orderItem(editingProduct.id, editQuantity);
-      console.log('✅ API Response:', response);
 
       if (response.code === 'success') {
-        console.log('Product updated successfully');
-        // Update the local state
         setLowStockItems(prevItems =>
           prevItems.map(item =>
             item.id === editingProduct.id ? { ...item, quantity: editQuantity } : item
           )
         );
-        // Refresh total products
         fetchTotalProducts();
         closeEditModal();
-        alert('Cập nhật số lượng thành công!');
+        toast.success('Cập nhật số lượng thành công!');
       } else {
-        console.error('❌ Response error:', response);
-        alert(response.message || 'Cập nhật thất bại');
+        toast.error(response.message || 'Cập nhật thất bại');
       }
     } catch (error) {
-      console.error('💥 Error updating quantity:', error);
-      console.error('Error response:', error.response);
-      console.error('Error data:', error.response?.data);
-      alert(error.response?.data?.message || 'Lỗi khi cập nhật số lượng');
+      toast.error(error.response?.data?.message || 'Lỗi khi cập nhật số lượng');
     } finally {
       setSubmitting(false);
     }

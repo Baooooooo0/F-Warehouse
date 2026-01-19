@@ -22,8 +22,7 @@ const ProductEdit = () => {
         threshold: '',
         categoryId: [],
         image: null,
-        currentImage: '', // To display existing image
-        threshold: 0,
+        currentImage: '',
     });
 
     useEffect(() => {
@@ -35,16 +34,10 @@ const ProductEdit = () => {
     const fetchProductDetails = async () => {
         try {
             setFetchingProduct(true);
-            console.log('🔍 Fetching product details for ID:', id);
-
             const response = await productAPI.getById(id);
-            console.log('📦 Product API Response:', response);
 
             if (response.code === 'success' && response.data && response.data.length > 0) {
                 const product = response.data[0];
-                console.log('✨ Product data:', product);
-
-                // Pre-fill form with product data
                 setFormData({
                     name: product.name || '',
                     warehouseId: product.warehouseId || '',
@@ -54,16 +47,12 @@ const ProductEdit = () => {
                     categoryId: product.categoryIds ? product.categoryIds.map(c => c.categoryId) : [],
                     image: null,
                     currentImage: product.image || '',
-                    threshold: product.threshold || 0,
                 });
-
-                console.log('✅ Form pre-filled with product data');
             } else {
                 toast.error('Không tìm thấy sản phẩm');
                 navigate('/inventory/products');
             }
         } catch (error) {
-            console.error('💥 Error fetching product:', error);
             toast.error('Không thể tải thông tin sản phẩm');
             navigate('/inventory/products');
         } finally {
@@ -78,7 +67,7 @@ const ProductEdit = () => {
                 setCategories(response.data || []);
             }
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            // Silent fail
         }
     };
 
@@ -89,7 +78,7 @@ const ProductEdit = () => {
                 setWarehouses(response.data || []);
             }
         } catch (error) {
-            console.error('Error fetching warehouses:', error);
+            // Silent fail
         }
     };
 
@@ -137,8 +126,6 @@ const ProductEdit = () => {
 
         try {
             setLoading(true);
-            console.log('🚀 Updating product...');
-            console.log('📝 Form data:', formData);
 
             const submitData = new FormData();
             submitData.append('name', formData.name);
@@ -152,36 +139,21 @@ const ProductEdit = () => {
             if (formData.categoryId.length > 0) {
                 const categoryIdJson = JSON.stringify(formData.categoryId);
                 submitData.append('categoryId', categoryIdJson);
-                console.log('📦 CategoryId JSON:', categoryIdJson);
             }
 
-            // Only append image if new image selected
             if (formData.image) {
                 submitData.append('image', formData.image);
-                console.log('🖼️ New image file:', formData.image.name);
-            } else {
-                console.log('📷 Keeping existing image');
             }
 
-            console.log('📤 Submitting FormData to update product ID:', id);
-
-            const endpoint = `/product/update/${id}`;
-            console.log('🔗 API Endpoint:', endpoint);
-
             const response = await productAPI.update(id, submitData);
-            console.log('✅ API Response:', response);
 
             if (response.code === 'success') {
                 toast.success('Cập nhật sản phẩm thành công!');
                 navigate('/inventory/products');
             } else {
-                console.error('❌ Response error:', response);
                 toast.error(response.message || 'Không thể cập nhật sản phẩm');
             }
         } catch (error) {
-            console.error('💥 Error updating product:', error);
-            console.error('Error response:', error.response);
-            console.error('Error data:', error.response?.data);
             toast.error(error.response?.data?.message || 'Không thể cập nhật sản phẩm');
         } finally {
             setLoading(false);
@@ -192,13 +164,6 @@ const ProductEdit = () => {
         setFormData(prev => ({
             ...prev,
             quantity: Math.max(0, prev.quantity + delta)
-        }));
-    };
-
-    const handleThresholdChange = (delta) => {
-        setFormData(prev => ({
-            ...prev,
-            threshold: Math.max(0, prev.threshold + delta)
         }));
     };
 

@@ -42,7 +42,6 @@ const CategoryManagement = () => {
                 setPageQuantity(response.pageQuantity || 1);
             }
         } catch (error) {
-            console.error('Error fetching categories:', error);
             setCategories([]);
         } finally {
             setLoading(false);
@@ -86,11 +85,7 @@ const CategoryManagement = () => {
         try {
             if (isEditMode && editingCategoryId) {
                 // Update existing category
-                console.log('📝 Updating category ID:', editingCategoryId);
-                console.log('📤 Form data:', formData);
-
                 const response = await categoryAPI.update(editingCategoryId, formData);
-                console.log('✅ API Response:', response);
 
                 if (response.code === 'success') {
                     setIsModalOpen(false);
@@ -100,17 +95,11 @@ const CategoryManagement = () => {
                     fetchCategories();
                     toast.success('Cập nhật danh mục thành công!');
                 } else {
-                    console.error('❌ Response error:', response);
                     toast.error(response.message || 'Không thể cập nhật danh mục');
                 }
             } else {
                 // Create new category
-                console.log('🚀 Creating category...');
-                console.log('📝 Form data:', formData);
-                console.log('📤 Sending to API:', { name: formData.name });
-
                 const response = await categoryAPI.create(formData);
-                console.log('✅ API Response:', response);
 
                 if (response.code === 'success') {
                     setIsModalOpen(false);
@@ -118,14 +107,10 @@ const CategoryManagement = () => {
                     fetchCategories();
                     toast.success('Tạo danh mục thành công!');
                 } else {
-                    console.error('❌ Response error:', response);
                     toast.error(response.message || 'Không thể tạo danh mục');
                 }
             }
         } catch (error) {
-            console.error('💥 Error:', error);
-            console.error('Error response:', error.response);
-            console.error('Error data:', error.response?.data);
             toast.error(error.response?.data?.message || (isEditMode ? 'Không thể cập nhật danh mục' : 'Không thể tạo danh mục'));
         }
     };
