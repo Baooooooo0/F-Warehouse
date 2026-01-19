@@ -4,6 +4,10 @@ import { dashboardAPI } from '../../api/dashboard.api';
 
 const Dashboard = () => {
   const [totalProducts, setTotalProducts] = useState(0);
+  const [totalInventoryValue, seTtotalInventoryValue] = useState(0);
+  const [totalLowQuantityProduct, setTotalLowQuantityProduct] = useState(0);
+  const [totalWarehouse, setTotalWarehouse] = useState(0);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,7 +18,12 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await dashboardAPI.getTotal();
-      setTotalProducts(response.data.totalInventoryValue);
+      setTotalProducts(response.data.totalProduct);
+      seTtotalInventoryValue(response.data.totalInventoryValue);
+      setTotalLowQuantityProduct(response.data.totalLowQuantityProduct);
+      setTotalWarehouse(response.data.totalWarehouse);
+
+
       console.log('Total products fetched:', response);
     } catch (error) {
       console.error('Error fetching total products:', error);
@@ -27,7 +36,7 @@ const Dashboard = () => {
   const statsCards = [
     {
       title: 'Tổng giá trị tồn kho',
-      value: '$124,500',
+      value: totalInventoryValue,
       change: '+12%',
       changeType: 'positive',
       icon: 'trending_up',
@@ -35,7 +44,7 @@ const Dashboard = () => {
     },
     {
       title: 'Kho đang hoạt động',
-      value: '12',
+      value: totalWarehouse,
       change: 'Ổn định',
       changeType: 'neutral',
       icon: 'warehouse',
@@ -43,7 +52,7 @@ const Dashboard = () => {
     },
     {
       title: 'Mặt hàng sắp hết',
-      value: '45',
+      value: totalLowQuantityProduct,
       change: '+5%',
       changeType: 'warning',
       icon: 'warning',
