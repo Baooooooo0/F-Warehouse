@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/dashboard.css';
 import { dashboardAPI } from '../../api/dashboard.api';
 import { productAPI } from '../../api/product.api';
@@ -7,6 +7,7 @@ import { productListAPI } from '../../api/warehouse.api';
 import { useToast } from '../../components/Toast/Toast';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalInventoryValue, seTtotalInventoryValue] = useState(0);
   const [totalLowQuantityProduct, setTotalLowQuantityProduct] = useState(0);
@@ -203,7 +204,10 @@ const Dashboard = () => {
                   <tbody className="divide-y divide-slate-200">
                     {lowStockItems.map((item, index) => (
                       <tr key={index} className="group hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-slate-900">
+                        <td 
+                          onClick={() => navigate(`/chart?id=${item.id}`)}
+                          className="px-6 py-4 font-medium text-slate-900 cursor-pointer"
+                        >
                           <div className="flex items-center gap-3">
                             {item.image && (
                               <div
@@ -217,7 +221,10 @@ const Dashboard = () => {
                               </div>
                             )}
                             <div className="flex flex-col">
-                              <span>{item.name}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="hover:text-primary transition-colors">{item.name}</span>
+                                <span className="material-symbols-outlined text-slate-400 text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                              </div>
                               <span className="text-xs font-normal text-slate-500">ID: {item.id}</span>
                             </div>
                           </div>
@@ -253,11 +260,29 @@ const Dashboard = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => openEditModal(item)}
-                            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-900 transition-all hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                            Đặt thêm
-                          </button>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/chart?id=${item.id}`);
+                              }}
+                              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-all hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                              title="Xem biểu đồ"
+                            >
+                              <span className="material-symbols-outlined text-[16px]">show_chart</span>
+                              Biểu đồ
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openEditModal(item);
+                              }}
+                              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-900 transition-all hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            >
+                              <span className="material-symbols-outlined text-[16px]">add_shopping_cart</span>
+                              Đặt thêm
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -273,21 +298,41 @@ const Dashboard = () => {
             <div className="flex flex-col gap-4">
               <h3 className="text-lg font-bold text-slate-900">Sản phẩm bán chạy</h3>
               <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div className="flex flex-col gap-4">
-                  {bestSelling.map((product, index) => (
-                    <div key={index} className="flex items-center gap-3 border-b border-slate-200 pb-3 last:border-0 last:pb-0">
-                      <div
-                        className="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center"
-                        style={{ backgroundImage: `url('${product.image}')` }}
-                      />
-                      <div className="flex flex-1 flex-col">
-                        <span className="text-sm font-medium text-slate-900">{product.name}</span>
-                        <span className="text-xs text-slate-500">{product.units}</span>
-                      </div>
-                      <span className="text-sm font-bold text-green-600">{product.revenue}</span>
-                    </div>
-                  ))}
-                </div>
+                {bestSelling.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-slate-400">
+                    <span className="material-symbols-outlined text-4xl mb-2">inventory_2</span>
+                    <p className="text-sm">Chưa có dữ liệu</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {bestSelling.map((product, index) => (
+                      <button
+                        key={index}
+                        onClick={() => navigate(`/chart?id=${product.id}`)}
+                        className="flex items-center gap-3 border-b border-slate-200 pb-3 last:border-0 last:pb-0 hover:bg-slate-50 px-2 py-1 rounded-lg transition-colors text-left w-full"
+                      >
+                        {product.image ? (
+                          <div
+                            className="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                            style={{ backgroundImage: `url('${product.image}')` }}
+                          />
+                        ) : (
+                          <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-slate-400 text-[20px]">image</span>
+                          </div>
+                        )}
+                        <div className="flex flex-1 flex-col">
+                          <span className="text-sm font-medium text-slate-900">{product.name}</span>
+                          <span className="text-xs text-slate-500">{product.units}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-green-600">{product.revenue}</span>
+                          <span className="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

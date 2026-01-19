@@ -319,11 +319,18 @@ const ProductList = () => {
                 products.map((product) => {
                   const stockStatus = getStockStatus(product.quantity);
                   return (
-                    <tr key={product.id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={product.id} className="hover:bg-slate-50 transition-colors group">
                       <td className="px-6 py-4">
-                        <input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
+                        <input 
+                          type="checkbox" 
+                          className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" 
+                          onClick={(e) => e.stopPropagation()}
+                        />
                       </td>
-                      <td className="px-6 py-4">
+                      <td 
+                        onClick={() => navigate(`/chart?id=${product.id}`)}
+                        className="px-6 py-4 cursor-pointer"
+                      >
                         <div className="flex items-center gap-3">
                           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 overflow-hidden">
                             {product.image ? (
@@ -333,7 +340,10 @@ const ProductList = () => {
                             )}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-slate-900">{product.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-semibold text-slate-900 group-hover:text-primary transition-colors">{product.name}</span>
+                              <span className="material-symbols-outlined text-slate-400 text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                            </div>
                             <span className="text-xs text-slate-500">ID: {product.id}</span>
                           </div>
                         </div>
@@ -376,14 +386,30 @@ const ProductList = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => navigate(`/inventory/products/edit/${product.id}`)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/chart?id=${product.id}`);
+                            }}
+                            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Xem biểu đồ"
+                          >
+                            <span className="material-symbols-outlined text-[20px]">show_chart</span>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/inventory/products/edit/${product.id}`);
+                            }}
                             className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                             title="Chỉnh sửa"
                           >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
                           <button
-                            onClick={() => handleLockProduct(product.id, product.isActive)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLockProduct(product.id, product.isActive);
+                            }}
                             className={`p-2 rounded-lg transition-colors ${product.isActive
                               ? 'text-slate-400 hover:text-red-600 hover:bg-red-50'
                               : 'text-slate-400 hover:text-green-600 hover:bg-green-50'

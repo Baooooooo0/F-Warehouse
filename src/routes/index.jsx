@@ -14,6 +14,7 @@ import ProductList from '../pages/Products/ProductList';
 import ProductCreate from '../pages/Products/ProductCreate';
 import ProductAdd from '../pages/Products/ProductAdd';
 import ProductEdit from '../pages/Products/ProductEdit';
+import ProductChart from '../pages/Products/ProductChart';
 import LowStockProducts from '../pages/Products/LowStockProducts';
 import CategoryManagement from '../pages/Inventory/CategoryManagement';
 import Login from '../pages/Login/Login';
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: 'inventory/products/low-stock',
         element: <LowStockProducts />,
+      },
+      {
+        path: 'chart',
+        element: <ProductChart />,
       },
       {
         path: 'inventory/categories',
