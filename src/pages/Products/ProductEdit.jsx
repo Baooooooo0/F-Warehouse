@@ -19,6 +19,7 @@ const ProductEdit = () => {
         warehouseId: '',
         quantity: 0,
         price: '',
+        threshold: '',
         categoryId: [],
         image: null,
         currentImage: '', // To display existing image
@@ -48,6 +49,7 @@ const ProductEdit = () => {
                     warehouseId: product.warehouseId || '',
                     quantity: product.quantity || 0,
                     price: product.price || '',
+                    threshold: product.threshold || '',
                     categoryId: product.categoryIds ? product.categoryIds.map(c => c.categoryId) : [],
                     image: null,
                     currentImage: product.image || '',
@@ -141,6 +143,9 @@ const ProductEdit = () => {
             submitData.append('warehouseId', formData.warehouseId);
             submitData.append('quantity', formData.quantity);
             submitData.append('price', formData.price || 0);
+            if (formData.threshold !== '') {
+                submitData.append('threshold', formData.threshold);
+            }
 
             if (formData.categoryId.length > 0) {
                 const categoryIdJson = JSON.stringify(formData.categoryId);
@@ -190,7 +195,7 @@ const ProductEdit = () => {
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-slate-600">Loading product details...</p>
+                    <p className="text-slate-600">Đang tải thông tin sản phẩm...</p>
                 </div>
             </div>
         );
@@ -200,20 +205,20 @@ const ProductEdit = () => {
         <div className="flex flex-col gap-6">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-slate-500">
-                <Link to="/dashboard" className="hover:text-slate-900">Home</Link>
+                <Link to="/dashboard" className="hover:text-slate-900">Trang chủ</Link>
                 <span>/</span>
-                <Link to="/inventory/products" className="hover:text-slate-900">Inventory</Link>
+                <Link to="/inventory/products" className="hover:text-slate-900">Kho hàng</Link>
                 <span>/</span>
-                <Link to="/inventory/products" className="hover:text-slate-900">Products</Link>
+                <Link to="/inventory/products" className="hover:text-slate-900">Sản phẩm</Link>
                 <span>/</span>
-                <span className="text-slate-900 font-medium">Edit Product</span>
+                <span className="text-slate-900 font-medium">Chỉnh sửa sản phẩm</span>
             </nav>
 
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-2">
-                    <h1 className="text-4xl font-bold text-slate-900">Edit Product</h1>
-                    <p className="text-base text-slate-500">Update product information and inventory details.</p>
+                    <h1 className="text-4xl font-bold text-slate-900">Chỉnh sửa sản phẩm</h1>
+                    <p className="text-base text-slate-500">Cập nhật thông tin sản phẩm và chi tiết tồn kho.</p>
                 </div>
                 <div className="flex gap-3">
                     <Link
@@ -221,7 +226,7 @@ const ProductEdit = () => {
                         className="flex items-center gap-2 h-11 px-4 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                         <span className="material-symbols-outlined text-[20px]">close</span>
-                        Cancel
+                        Hủy
                     </Link>
                     <button
                         onClick={handleSubmit}
@@ -231,12 +236,12 @@ const ProductEdit = () => {
                         {loading ? (
                             <>
                                 <span className="material-symbols-outlined text-[20px] animate-spin">refresh</span>
-                                Updating...
+                                Đang cập nhật...
                             </>
                         ) : (
                             <>
                                 <span className="material-symbols-outlined text-[20px]">save</span>
-                                Update Product
+                                Cập nhật sản phẩm
                             </>
                         )}
                     </button>
@@ -249,11 +254,11 @@ const ProductEdit = () => {
                 <div className="lg:col-span-2 flex flex-col gap-6">
                     {/* Basic Information */}
                     <div className="bg-white rounded-xl border border-slate-200 p-6">
-                        <h2 className="text-lg font-bold text-slate-900 mb-4">Basic Information</h2>
+                        <h2 className="text-lg font-bold text-slate-900 mb-4">Thông tin cơ bản</h2>
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Product Name <span className="text-red-500">*</span>
+                                    Tên sản phẩm <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -261,7 +266,7 @@ const ProductEdit = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
-                                    placeholder="Enter product name"
+                                    placeholder="Nhập tên sản phẩm"
                                     className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     required
                                 />
@@ -269,7 +274,7 @@ const ProductEdit = () => {
 
                             <div>
                                 <label htmlFor="price" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Price
+                                    Giá
                                 </label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">$</span>
@@ -290,12 +295,12 @@ const ProductEdit = () => {
 
                     {/* Product Media */}
                     <div className="bg-white rounded-xl border border-slate-200 p-6">
-                        <h2 className="text-lg font-bold text-slate-900 mb-4">Product Media</h2>
+                        <h2 className="text-lg font-bold text-slate-900 mb-4">Hình ảnh sản phẩm</h2>
                         <div className="space-y-4">
                             {/* Current Image Preview */}
                             {formData.currentImage && !formData.image && (
                                 <div className="mb-4">
-                                    <p className="text-sm font-medium text-slate-700 mb-2">Current Image:</p>
+                                    <p className="text-sm font-medium text-slate-700 mb-2">Hình ảnh hiện tại:</p>
                                     <img
                                         src={formData.currentImage}
                                         alt="Current product"
@@ -307,7 +312,7 @@ const ProductEdit = () => {
                             {/* New Image Preview */}
                             {formData.image && (
                                 <div className="mb-4">
-                                    <p className="text-sm font-medium text-slate-700 mb-2">New Image:</p>
+                                    <p className="text-sm font-medium text-slate-700 mb-2">Hình ảnh mới:</p>
                                     <img
                                         src={URL.createObjectURL(formData.image)}
                                         alt="New product"
@@ -331,9 +336,9 @@ const ProductEdit = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium text-slate-900">
-                                                {formData.image ? 'Change image' : 'Click to upload new image'}
+                                                {formData.image ? 'Thay đổi hình ảnh' : 'Nhấp để tải lên hình ảnh mới'}
                                             </p>
-                                            <p className="text-xs text-slate-500 mt-1">PNG, JPG or GIF (max. 10MB)</p>
+                                            <p className="text-xs text-slate-500 mt-1">PNG, JPG hoặc GIF (tối đa 10MB)</p>
                                         </div>
                                     </div>
                                 </label>
@@ -345,13 +350,13 @@ const ProductEdit = () => {
                 {/* Right Column - Organization */}
                 <div className="lg:col-span-1">
                     <div className="bg-white rounded-xl border border-slate-200 p-6 sticky top-6">
-                        <h2 className="text-lg font-bold text-slate-900 mb-4">Organization</h2>
+                        <h2 className="text-lg font-bold text-slate-900 mb-4">Phân loại</h2>
 
                         <div className="space-y-4">
                             {/* Category */}
                             <div>
                                 <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Category
+                                    Danh mục
                                 </label>
                                 <select
                                     id="category"
@@ -363,7 +368,7 @@ const ProductEdit = () => {
                                         }
                                     }}
                                 >
-                                    <option value="">Select category...</option>
+                                    <option value="">Chọn danh mục...</option>
                                     {categories.map((category) => (
                                         <option key={category.id} value={category.id}>
                                             {category.name}
@@ -399,7 +404,7 @@ const ProductEdit = () => {
                             {/* Warehouse */}
                             <div>
                                 <label htmlFor="warehouseId" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Warehouse Location <span className="text-red-500">*</span>
+                                    Vị trí kho hàng <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     id="warehouseId"
@@ -409,7 +414,7 @@ const ProductEdit = () => {
                                     className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
                                     required
                                 >
-                                    <option value="">Select warehouse...</option>
+                                    <option value="">Chọn kho hàng...</option>
                                     {warehouses.map((warehouse) => (
                                         <option key={warehouse.id} value={warehouse.id}>
                                             {warehouse.name}
@@ -421,7 +426,7 @@ const ProductEdit = () => {
                             {/* Quantity */}
                             <div>
                                 <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-2">
-                                    Quantity on Hand
+                                    Số lượng tồn kho
                                 </label>
                                 <div className="flex items-center gap-2">
                                     <button
@@ -448,6 +453,27 @@ const ProductEdit = () => {
                                         <span className="material-symbols-outlined text-[20px]">add</span>
                                     </button>
                                 </div>
+                            </div>
+
+                            {/* Threshold - Low Stock Warning */}
+                            <div>
+                                <label htmlFor="threshold" className="block text-sm font-medium text-slate-700 mb-2">
+                                    Ngưỡng cảnh báo
+                                </label>
+                                <div className="relative">
+                                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">warning</span>
+                                    <input
+                                        type="number"
+                                        id="threshold"
+                                        name="threshold"
+                                        value={formData.threshold}
+                                        onChange={handleInputChange}
+                                        placeholder="Ví dụ: 10"
+                                        min="0"
+                                        className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    />
+                                </div>
+                                <p className="text-xs text-slate-500 mt-1">Khi số lượng tồn thấp hơn ngưỡng này, sản phẩm sẽ được đánh dấu là sắp hết hàng.</p>
                             </div>
                         </div>
                     </div>
