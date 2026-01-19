@@ -12,8 +12,8 @@ export const dashboardAPI = {
   },
 
   // Get low stock items
-  getLowStock: () => {
-    return axiosClient.get('/dashboard/low-stock');
+  getLowStock: (params = {}) => {
+    return axiosClient.get('/dashboard/lowProduct', { params: { page: 1, ...params } });
   },
 
   // Get best selling products

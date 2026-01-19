@@ -23,6 +23,7 @@ const ProductEdit = () => {
         categoryId: [],
         image: null,
         currentImage: '', // To display existing image
+        threshold: 0,
     });
 
     useEffect(() => {
@@ -53,6 +54,7 @@ const ProductEdit = () => {
                     categoryId: product.categoryIds ? product.categoryIds.map(c => c.categoryId) : [],
                     image: null,
                     currentImage: product.image || '',
+                    threshold: product.threshold || 0,
                 });
 
                 console.log('✅ Form pre-filled with product data');
@@ -187,6 +189,13 @@ const ProductEdit = () => {
         setFormData(prev => ({
             ...prev,
             quantity: Math.max(0, prev.quantity + delta)
+        }));
+    };
+
+    const handleThresholdChange = (delta) => {
+        setFormData(prev => ({
+            ...prev,
+            threshold: Math.max(0, prev.threshold + delta)
         }));
     };
 
