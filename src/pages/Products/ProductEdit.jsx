@@ -36,7 +36,7 @@ const ProductEdit = () => {
             setFetchingProduct(true);
             const response = await productAPI.getById(id);
 
-            if (response.code === 'success' && response.data && response.data.length > 0) {
+            if (response.code === 'success' && response.data && Array.isArray(response.data) && response.data.length > 0) {
                 const product = response.data[0];
                 setFormData({
                     name: product.name || '',

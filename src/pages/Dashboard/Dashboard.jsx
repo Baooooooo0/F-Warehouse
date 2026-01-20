@@ -242,20 +242,15 @@ const Dashboard = () => {
                               <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
                               Hết hàng
                             </span>
-                          ) : item.quantity <= item.threshold * 0.2 ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-red-500/10 text-red-600 ring-red-600/20">
-                              <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-                              Nguy cấp
-                            </span>
-                          ) : item.quantity <= item.threshold * 0.5 ? (
+                          ) : item.quantity === item.threshold ? (
                             <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-orange-500/10 text-orange-600 ring-orange-600/20">
                               <span className="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
                               Sắp hết
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-green-500/10 text-green-600 ring-green-600/20">
-                              <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                              Bình thường
+                            <span className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-yellow-500/10 text-yellow-600 ring-yellow-600/20">
+                              <span className="h-1.5 w-1.5 rounded-full bg-yellow-500"></span>
+                              Nguy cấp
                             </span>
                           )}
                         </td>

@@ -8,16 +8,42 @@ export const productAPI = {
 
   // Get product by ID 
   getById: async (id) => {
-    const response = await axiosClient.get('/product/list');
-    if (response.code === 'success' && response.data) {
-      // Filter by ID on frontend
-      const product = response.data.find(p => p.id === Number(id));
+    try {
+      // Fetch all pages to find the product
+      let allProducts = [];
+      let pageNum = 1;
+      let totalPages = 1;
+      
+      while (pageNum <= totalPages) {
+        const response = await axiosClient.get('/product/list', { 
+          params: { 
+            page: pageNum
+          } 
+        });
+        
+        if (response.code === 'success' && response.data && Array.isArray(response.data)) {
+          allProducts = allProducts.concat(response.data);
+          totalPages = response.pageQuantity || 1;
+          pageNum++;
+        } else {
+          break;
+        }
+      }
+      
+      // Find the product by ID
+      const product = allProducts.find(p => String(p.id) === String(id));
+      
       return {
-        ...response,
+        code: 'success',
         data: product ? [product] : []
       };
+    } catch (error) {
+      console.error('Lỗi khi lấy sản phẩm:', error);
+      return {
+        code: 'error',
+        data: []
+      };
     }
-    return response;
   },
 
   // Create new product (with FormData for image upload)
