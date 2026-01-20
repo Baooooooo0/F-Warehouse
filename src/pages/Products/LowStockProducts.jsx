@@ -39,7 +39,7 @@ const LowStockProducts = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await categoryAPI.getAll();
+            const response = await categoryAPI.getAll({ isActive: true });
             if (response.code === 'success') {
                 setCategories(response.data || []);
             }
