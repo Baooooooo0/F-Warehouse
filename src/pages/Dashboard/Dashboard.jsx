@@ -79,7 +79,7 @@ const Dashboard = () => {
 
   const openEditModal = (product) => {
     setEditingProduct(product);
-    setEditQuantity(product.quantity);
+    setEditQuantity(0); // Mặc định là 0, user nhập bao nhiêu thì đặt thêm bấy nhiêu
     setShowEditModal(true);
   };
 
@@ -98,11 +98,8 @@ const Dashboard = () => {
       const response = await productAPI.orderItem(editingProduct.id, editQuantity);
 
       if (response.code === 'success') {
-        setLowStockItems(prevItems =>
-          prevItems.map(item =>
-            item.id === editingProduct.id ? { ...item, quantity: editQuantity } : item
-          )
-        );
+        // Refresh lại danh sách tồn kho thấp từ server để cập nhật chính xác
+        fetchLowStockProducts();
         fetchTotalProducts();
         closeEditModal();
         toast.success('Cập nhật số lượng thành công!');
@@ -204,7 +201,7 @@ const Dashboard = () => {
                   <tbody className="divide-y divide-slate-200">
                     {lowStockItems.map((item, index) => (
                       <tr key={index} className="group hover:bg-slate-50 transition-colors">
-                        <td 
+                        <td
                           onClick={() => navigate(`/chart?id=${item.id}`)}
                           className="px-6 py-4 font-medium text-slate-900 cursor-pointer"
                         >
@@ -378,7 +375,7 @@ const Dashboard = () => {
                 Số lượng hiện tại: <span className="text-primary font-bold">{editingProduct.quantity}</span>
               </label>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Cập nhật số lượng mới
+                Số lượng đặt thêm
               </label>
               <div className="flex items-center gap-3">
                 <button
@@ -394,6 +391,7 @@ const Dashboard = () => {
                   onChange={(e) => setEditQuantity(Math.max(0, Number(e.target.value)))}
                   className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-center font-bold focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   min="0"
+                  placeholder="Nhập số lượng..."
                 />
                 <button
                   type="button"
@@ -403,7 +401,7 @@ const Dashboard = () => {
                   <span className="material-symbols-outlined text-[20px]">add</span>
                 </button>
               </div>
-              <p className="text-xs text-slate-500 mt-2">Thay đổi: {editQuantity - editingProduct.quantity > 0 ? '+' : ''}{editQuantity - editingProduct.quantity}</p>
+              <p className="text-xs text-slate-500 mt-2">Sau khi đặt: <span className="font-bold text-green-600">{editingProduct.quantity + editQuantity}</span> đơn vị</p>
             </div>
 
             {/* Action Buttons */}
